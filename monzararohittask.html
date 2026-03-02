@@ -1,0 +1,2083 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Cinzel:wght@600;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+Pro:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<base target="_top">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MONZARA</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Source Serif Pro',serif;background:linear-gradient(135deg,#1a3324,#2d5a2d,#5a8a50);color:white;min-height:100vh;}
+
+/* ── SIDEBAR ── */
+.sidebar{width:220px;height:100vh;background:rgba(15,60,35,0.82);backdrop-filter:blur(18px);position:fixed;top:0;left:0;z-index:600;display:flex;flex-direction:column;border-right:1px solid rgba(152,229,221,0.18);}
+.brand{display:flex;flex-direction:column;align-items:center;padding:16px 0 10px;border-bottom:1px solid rgba(255,255,255,0.1);}
+.brand-logo{width:58px;height:58px;object-fit:contain;margin-bottom:5px;}
+.brand-text{font-family:'Cinzel',serif;font-size:24px;font-weight:900;letter-spacing:4px;}
+.sidebar-nav{flex:1;overflow-y:auto;padding-top:6px;}
+.sidebar-nav::-webkit-scrollbar{display:none;}
+.nav-section{padding:10px 18px 3px;font-family:'Cinzel',serif;font-size:9px;color:rgba(255,255,255,0.35);letter-spacing:2.5px;text-transform:uppercase;}
+.nav-link{display:flex;align-items:center;gap:10px;padding:11px 18px;color:white;cursor:pointer;transition:all 0.25s;font-family:'Source Serif Pro',serif;font-weight:700;font-size:14px;border-left:3px solid transparent;text-decoration:none;}
+.nav-link:hover{background:rgba(255,255,255,0.1);border-left-color:rgba(152,229,221,0.5);transform:translateX(3px);}
+.nav-link.active{background:rgba(152,229,221,0.15);border-left-color:#98E5DD;}
+.nav-link .nav-icon{width:18px;text-align:center;font-size:13px;}
+
+/* ── MAIN ── */
+.main{margin-left:220px;padding:20px 24px;min-height:100vh;}
+.page-title{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+
+/* ── TODAY BANNER ── */
+.today-banner{background:rgba(0,0,0,0.25);border-radius:12px;padding:10px 16px;margin-bottom:14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.today-date-label{font-family:'Cinzel',serif;font-size:11px;color:rgba(255,255,255,0.55);letter-spacing:1px;}
+.today-date-val{font-family:'Cinzel',serif;font-size:15px;font-weight:700;color:#98E5DD;}
+.today-tasks-count{margin-left:auto;font-family:'Cinzel',serif;font-size:11px;}
+.today-task-chip{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,0.12);border-radius:20px;padding:3px 10px;font-size:12px;margin:2px;cursor:pointer;transition:0.2s;}
+.today-task-chip:hover{background:rgba(255,255,255,0.22);}
+
+/* ── FILTER BAR ── */
+.filter-bar{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;background:rgba(0,0,0,0.2);border-radius:12px;padding:10px 14px;margin-bottom:14px;}
+.fb-group{display:flex;flex-direction:column;gap:3px;}
+.fb-group label{font-family:'Cinzel',serif;font-size:9px;font-weight:700;letter-spacing:1px;color:rgba(255,255,255,0.55);}
+.fb-input{background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);border-radius:7px;color:white;padding:5px 9px;font-size:12px;font-family:'Source Serif Pro',serif;outline:none;cursor:pointer;min-width:0;}
+.fb-input[type="date"]{color-scheme:dark;}
+.fb-input option{background:#1F3D2B;color:white;}
+.fb-input::placeholder{color:rgba(255,255,255,0.4);}
+.fb-btn{padding:6px 12px;border:none;border-radius:7px;cursor:pointer;font-family:'Cinzel',serif;font-size:10px;font-weight:700;letter-spacing:1px;transition:0.25s;align-self:flex-end;}
+.fb-btn-clear{background:rgba(255,80,80,0.2);color:white;}
+.fb-btn-clear:hover{background:rgba(255,80,80,0.45);}
+.fb-btn-today{background:rgba(152,229,221,0.2);color:#98E5DD;}
+.fb-btn-today:hover{background:rgba(152,229,221,0.35);}
+
+/* ── STATUS CARDS ── */
+.status-cards{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:14px;}
+.s-card{flex:1;min-width:120px;max-width:180px;border-radius:16px;padding:12px 14px;cursor:pointer;transition:all 0.3s ease;text-align:center;position:relative;overflow:hidden;font-family:'Cinzel',serif;font-weight:700;letter-spacing:1px;font-size:11px;}
+.s-card h3{font-size:26px;margin-top:4px;margin-bottom:0;}
+.s-card:hover{transform:scale(1.04);}
+.s-card::after{content:"";position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(120deg,transparent,rgba(255,255,255,0.25),transparent);transition:0.5s;}
+.s-card:hover::after{left:100%;}
+.s-card.fil-active{box-shadow:0 0 0 3px #98E5DD,0 0 18px rgba(152,229,221,0.35);}
+.sc-completed{background:linear-gradient(135deg,#6a8840,#BBAB47,#0A3323);}
+.sc-skip{background:linear-gradient(135deg,#ddd,#111,#444);}
+.sc-hold{background:linear-gradient(135deg,#0B2839,#D68631,#3D717E);}
+.sc-progress{background:linear-gradient(135deg,#F9D58D,#BBAB47,#CDD7D8);color:#222;}
+.sc-pending{background:linear-gradient(135deg,#c4972a,#5D1E21,#354024);}
+
+.divider{margin:12px 0;border:none;height:1px;background:linear-gradient(to right,transparent,#ffffff50,transparent);}
+
+/* ── TABLE ── */
+.tbl-wrap{overflow-x:auto;border-radius:12px;}
+table{width:100%;border-collapse:collapse;background:rgba(255,255,255,0.06);border-radius:12px;overflow:hidden;min-width:980px;}
+th,td{padding:8px 10px;border:1px solid rgba(255,255,255,0.12);text-align:center;font-size:11px;}
+thead{background:rgba(0,0,0,0.28);font-family:'Cinzel',serif;font-size:9px;letter-spacing:1px;}
+thead th{padding:10px;}
+tbody tr:hover{background:rgba(255,255,255,0.06);}
+.done-row{opacity:0.42;}
+.done-row td{text-decoration:line-through;}
+.done-check{width:15px;height:15px;cursor:pointer;accent-color:#98E5DD;}
+.s-badge{padding:2px 8px;border-radius:12px;font-size:9px;font-family:'Cinzel',serif;font-weight:700;cursor:pointer;border:none;transition:0.2s;letter-spacing:0.5px;white-space:nowrap;}
+.s-badge:hover{transform:scale(1.08);}
+.action-btn{border:none;color:white;padding:3px 7px;border-radius:6px;cursor:pointer;font-size:10px;margin:1px;transition:0.2s;}
+.action-btn:hover{transform:scale(1.08);}
+.btn-edit{background:rgba(100,150,255,0.7);}
+.btn-del{background:rgba(200,50,50,0.7);}
+
+/* ── CALENDAR ── */
+#calView{display:none;}
+.cal-wrap{display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start;}
+.cal-box{flex:0 0 auto;}
+.cal-notes-box{flex:1;min-width:230px;background:rgba(0,0,0,0.22);border-radius:12px;padding:14px;max-height:430px;overflow-y:auto;}
+.cal-notes-box h3{font-family:'Cinzel',serif;font-size:12px;margin-bottom:10px;color:#98E5DD;letter-spacing:1px;}
+.cnote{background:rgba(255,255,255,0.09);border-radius:8px;padding:8px 11px;margin-bottom:7px;font-size:11px;border-left:3px solid #98E5DD;}
+.cnote-party{font-weight:700;font-size:12px;}
+.cnote-detail{opacity:0.7;margin-top:3px;font-size:10px;}
+.cnote-empty{opacity:0.38;font-size:11px;font-style:italic;}
+.cal-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px;}
+.cal-nav{background:rgba(255,255,255,0.13);border:none;color:white;width:30px;height:30px;border-radius:50%;font-size:16px;cursor:pointer;transition:0.25s;}
+.cal-nav:hover{background:#98E5DD;color:#1F3D2B;}
+.cal-my{font-family:'Cinzel',serif;font-size:14px;font-weight:700;}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;width:min(390px,90vw);}
+.cal-dn{text-align:center;font-family:'Cinzel',serif;font-size:8px;font-weight:700;padding:4px 0;color:rgba(255,255,255,0.45);letter-spacing:1px;}
+.cal-dn.sun{color:#ff9999;}
+.cal-cell{background:rgba(255,255,255,0.07);border-radius:6px;min-height:48px;padding:3px;transition:0.2s;cursor:pointer;}
+.cal-cell:hover{background:rgba(255,255,255,0.15);}
+.cal-cell.today{border:2px solid #98E5DD;}
+.cal-cell.sunday{background:rgba(160,20,20,0.4);}
+.cal-cell.sunday .cdate{color:#ffaaaa;}
+.cal-cell.selected{background:rgba(152,229,221,0.2);border:2px solid #98E5DD;}
+.cal-cell.empty{background:transparent;cursor:default;pointer-events:none;}
+.cdate{font-family:'Cinzel',serif;font-size:9px;font-weight:700;margin-bottom:2px;}
+.cdots{display:flex;flex-wrap:wrap;gap:2px;margin-top:1px;}
+.cdot{width:4px;height:4px;border-radius:50%;display:inline-block;}
+.ccount{font-size:7px;background:rgba(255,255,255,0.17);border-radius:3px;padding:1px 3px;margin-top:1px;display:inline-block;}
+
+/* ── MASTER DATA PAGE ── */
+#masterView{display:none;}
+.master-tabs{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
+.m-tab{padding:7px 16px;border:none;border-radius:20px;background:rgba(255,255,255,0.12);color:white;cursor:pointer;font-family:'Cinzel',serif;font-size:11px;font-weight:700;letter-spacing:1px;transition:0.25s;}
+.m-tab.active,.m-tab:hover{background:#98E5DD;color:#1F3D2B;}
+.master-search{width:100%;max-width:340px;padding:8px 14px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);border-radius:8px;color:white;font-size:13px;outline:none;margin-bottom:12px;}
+.master-search::placeholder{color:rgba(255,255,255,0.4);}
+.master-add-btn{padding:8px 18px;background:rgba(152,229,221,0.2);border:1px solid #98E5DD;color:#98E5DD;border-radius:8px;cursor:pointer;font-family:'Cinzel',serif;font-size:11px;font-weight:700;transition:0.25s;margin-bottom:12px;margin-left:8px;}
+.master-add-btn:hover{background:#98E5DD;color:#1F3D2B;}
+.party-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px;max-height:65vh;overflow-y:auto;}
+.party-card{background:rgba(255,255,255,0.09);border-radius:10px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;font-size:12px;transition:0.2s;border:1px solid rgba(255,255,255,0.1);}
+.party-card:hover{background:rgba(255,255,255,0.15);}
+.party-name{font-weight:700;font-size:12px;line-height:1.3;}
+.party-actions{display:flex;gap:4px;flex-shrink:0;}
+
+/* ── REMINDER PAGE ── */
+#reminderView{display:none;}
+.rem-list{display:flex;flex-direction:column;gap:8px;max-height:70vh;overflow-y:auto;}
+.rem-item{background:rgba(255,255,255,0.09);border-radius:10px;padding:12px 16px;display:flex;align-items:center;gap:12px;border-left:4px solid #98E5DD;}
+.rem-item.overdue{border-left-color:#e55;}
+.rem-item.soon{border-left-color:#f0a;}
+.rem-time{font-family:'Cinzel',serif;font-size:12px;font-weight:700;min-width:120px;}
+.rem-msg{flex:1;font-size:12px;}
+.rem-del{background:rgba(200,50,50,0.6);border:none;color:white;padding:4px 10px;border-radius:6px;cursor:pointer;font-size:10px;}
+.add-rem-btn{padding:9px 20px;background:rgba(152,229,221,0.2);border:1px solid #98E5DD;color:#98E5DD;border-radius:9px;cursor:pointer;font-family:'Cinzel',serif;font-size:12px;font-weight:700;transition:0.25s;margin-bottom:14px;}
+.add-rem-btn:hover{background:#98E5DD;color:#1F3D2B;}
+
+/* ── SLIDE PANEL (Add/Edit Task) ── */
+.slide-panel{position:fixed;right:-105%;top:0;width:min(720px,96vw);height:100vh;background:#fff;color:#222;transition:right 0.4s cubic-bezier(0.22,1,0.36,1);z-index:1200;box-shadow:-10px 0 50px rgba(0,0,0,0.5);display:flex;flex-direction:column;}
+.slide-panel.open{right:0;}
+.sp-hdr{display:flex;justify-content:space-between;align-items:center;padding:14px 20px;background:linear-gradient(135deg,#1a3324,#2d5a2d);color:white;flex-shrink:0;}
+.sp-hdr h2{margin:0;font-family:'Cinzel',serif;font-size:16px;letter-spacing:2px;}
+.sp-close{background:rgba(255,50,50,0.85);border:none;color:white;width:28px;height:28px;border-radius:50%;font-size:13px;cursor:pointer;transition:0.3s;}
+.sp-close:hover{background:red;transform:rotate(90deg);}
+.sp-body{padding:16px 20px;overflow-y:auto;flex:1;}
+.sp-body::-webkit-scrollbar{width:4px;}
+.sp-body::-webkit-scrollbar-thumb{background:rgba(63,107,63,0.3);border-radius:2px;}
+
+/* FORM */
+.fg{margin-bottom:11px;}
+.fg label{display:block;font-family:'Cinzel',serif;font-size:9px;font-weight:700;color:#1a3324;margin-bottom:3px;letter-spacing:1px;text-transform:uppercase;}
+.fg input,.fg select,.fg textarea{width:100%;padding:7px 11px;border:1.5px solid #e0e0e0;border-radius:8px;font-family:'Source Serif Pro',serif;font-size:13px;color:#333;background:#f8f8f8;transition:0.25s;outline:none;}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:#2d5a2d;background:white;box-shadow:0 0 0 3px rgba(45,90,45,0.1);}
+.fg textarea{resize:vertical;min-height:58px;}
+.fg-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.fg-row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+.form-div{border:none;height:1px;background:linear-gradient(to right,transparent,#2d5a2d40,transparent);margin:12px 0;}
+.submit-btn{width:100%;padding:10px;border:none;border-radius:10px;background:linear-gradient(135deg,#1a3324,#2d5a2d);color:white;font-family:'Cinzel',serif;font-size:13px;font-weight:700;letter-spacing:2px;cursor:pointer;transition:0.3s;margin-top:6px;}
+.submit-btn:hover{background:linear-gradient(135deg,#2d5a2d,#5a8a50);transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,0.2);}
+
+/* Party autocomplete */
+.autocomplete-wrap{position:relative;}
+.autocomplete-list{position:absolute;top:100%;left:0;right:0;background:white;border:1.5px solid #2d5a2d;border-top:none;border-radius:0 0 8px 8px;max-height:180px;overflow-y:auto;z-index:5000;display:none;}
+.autocomplete-list.show{display:block;}
+.ac-item{padding:7px 11px;font-size:12px;color:#333;cursor:pointer;font-family:'Source Serif Pro',serif;}
+.ac-item:hover,.ac-item.focused{background:#e8f5e9;}
+
+/* ── MODAL overlay (generic) ── */
+.modal-wrap{display:none;position:fixed;inset:0;z-index:2000;align-items:center;justify-content:center;}
+.modal-wrap.show{display:flex;}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.55);}
+.modal-box{background:#1a3324;border-radius:16px;padding:24px;width:300px;box-shadow:0 20px 60px rgba(0,0,0,0.6);border:1px solid rgba(255,255,255,0.14);position:relative;z-index:2001;}
+.modal-box h3{font-family:'Cinzel',serif;font-size:14px;margin-bottom:12px;color:#98E5DD;}
+.modal-s-btn{display:block;width:100%;padding:8px;margin-bottom:6px;border:none;border-radius:8px;cursor:pointer;font-family:'Cinzel',serif;font-size:12px;font-weight:700;letter-spacing:0.5px;transition:0.2s;}
+.modal-s-btn:hover{transform:scale(1.03);}
+.modal-cancel{background:rgba(255,255,255,0.1);border:none;color:white;padding:6px;width:100%;border-radius:8px;cursor:pointer;font-family:'Cinzel',serif;font-size:11px;margin-top:2px;}
+
+/* ── REMINDER POPUP (small corner) ── */
+.rem-popup{position:fixed;top:20px;right:20px;z-index:9000;display:flex;flex-direction:column;gap:8px;max-width:320px;}
+.rem-popup-item{background:linear-gradient(135deg,#1a3324,#3F6B3F);border:1px solid #98E5DD;border-radius:12px;padding:12px 16px;box-shadow:0 8px 24px rgba(0,0,0,0.4);animation:slideInRight 0.4s ease;display:flex;align-items:flex-start;gap:10px;}
+@keyframes slideInRight{from{transform:translateX(120%);opacity:0;}to{transform:translateX(0);opacity:1;}}
+.rem-popup-item .rem-icon{font-size:20px;flex-shrink:0;}
+.rem-popup-item .rem-text h4{font-family:'Cinzel',serif;font-size:12px;color:#98E5DD;margin-bottom:3px;}
+.rem-popup-item .rem-text p{font-size:11px;opacity:0.85;}
+.rem-popup-item .rem-dismiss{background:none;border:none;color:rgba(255,255,255,0.5);cursor:pointer;font-size:14px;margin-left:auto;flex-shrink:0;}
+.rem-popup-item .rem-dismiss:hover{color:white;}
+
+/* ── BIG BLOCKING REMINDER POPUP ── */
+#bigReminderOverlay{
+  display:none;position:fixed;inset:0;z-index:9500;
+  background:rgba(0,0,0,0.75);backdrop-filter:blur(6px);
+  align-items:center;justify-content:center;
+}
+#bigReminderOverlay.show{display:flex;}
+.big-rem-box{
+  background:linear-gradient(145deg,#0d2b1a,#1a4a28,#0d2b1a);
+  border:2px solid #98E5DD;border-radius:20px;
+  padding:36px 40px;max-width:520px;width:90%;
+  box-shadow:0 30px 80px rgba(0,0,0,0.7),0 0 40px rgba(152,229,221,0.15);
+  text-align:center;position:relative;
+  animation:popIn 0.4s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes popIn{from{transform:scale(0.7);opacity:0;}to{transform:scale(1);opacity:1;}}
+.big-rem-bell{font-size:56px;margin-bottom:10px;animation:ringBell 0.6s ease infinite alternate;}
+@keyframes ringBell{from{transform:rotate(-15deg);}to{transform:rotate(15deg);}}
+.big-rem-title{font-family:'Cinzel',serif;font-size:22px;font-weight:900;color:#98E5DD;margin-bottom:8px;letter-spacing:2px;}
+.big-rem-msg{font-family:'Source Serif Pro',serif;font-size:16px;color:white;margin-bottom:6px;line-height:1.5;}
+.big-rem-party{font-family:'Cinzel',serif;font-size:13px;color:rgba(152,229,221,0.8);margin-bottom:20px;}
+.big-rem-timer{font-family:'Cinzel',serif;font-size:13px;color:rgba(255,255,255,0.5);margin-bottom:22px;}
+.big-rem-count{font-family:'Cinzel',serif;font-size:11px;color:rgba(255,200,100,0.8);margin-bottom:16px;}
+.big-rem-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.big-rem-btn{padding:11px 24px;border:none;border-radius:10px;cursor:pointer;font-family:'Cinzel',serif;font-size:13px;font-weight:700;letter-spacing:1px;transition:0.25s;}
+.big-rem-btn:hover{transform:scale(1.05);}
+.brb-done{background:linear-gradient(135deg,#5a7a30,#BBAB47);color:white;}
+.brb-snooze{background:rgba(255,255,255,0.12);color:white;border:1px solid rgba(255,255,255,0.25);}
+.brb-snooze:hover{background:rgba(255,255,255,0.22);}
+
+/* Snooze settings inside reminder add */
+.snooze-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px;}
+.snooze-row label{font-family:'Cinzel',serif;font-size:10px;color:rgba(255,255,255,0.6);letter-spacing:1px;}
+
+
+/* ── OVERLAY ── */
+#overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:1100;}
+#overlay.on{display:block;}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:22px;right:22px;background:#1a3324;color:white;padding:10px 16px;border-radius:9px;font-family:'Cinzel',serif;font-size:11px;z-index:9999;opacity:0;transform:translateY(12px);transition:0.3s;pointer-events:none;border:1px solid rgba(152,229,221,0.3);max-width:280px;}
+.toast.show{opacity:1;transform:translateY(0);}
+
+/* ── MINI FORM (master add) ── */
+.mini-form{background:rgba(0,0,0,0.25);border-radius:12px;padding:14px 16px;margin-bottom:14px;display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;}
+.mini-form input,.mini-form select{padding:7px 11px;border:1.5px solid rgba(255,255,255,0.25);border-radius:8px;background:rgba(255,255,255,0.1);color:white;font-size:12px;outline:none;font-family:'Source Serif Pro',serif;}
+.mini-form input::placeholder{color:rgba(255,255,255,0.45);}
+.mini-form .mf-btn{padding:7px 14px;border:none;border-radius:8px;cursor:pointer;font-family:'Cinzel',serif;font-size:11px;font-weight:700;transition:0.25s;}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:rgba(255,255,255,0.03);}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.18);border-radius:3px;}
+
+/* ══════════════════════════════════
+   LOGIN SCREEN
+══════════════════════════════════ */
+#loginScreen{
+  display:flex;position:fixed;inset:0;z-index:9999;
+  background:linear-gradient(145deg,#0a1f12,#0f2d1a,#163d20,#0a1f12);
+  align-items:center;justify-content:center;
+  flex-direction:column;
+}
+#loginScreen.hidden{display:none;}
+.login-bg-pattern{
+  position:absolute;inset:0;
+  background-image:radial-gradient(circle at 20% 30%,rgba(152,229,221,0.06) 0%,transparent 50%),
+    radial-gradient(circle at 80% 70%,rgba(187,171,71,0.06) 0%,transparent 50%);
+  pointer-events:none;
+}
+.login-box{
+  background:rgba(10,31,18,0.85);
+  backdrop-filter:blur(20px);
+  border:1px solid rgba(152,229,221,0.2);
+  border-radius:24px;padding:40px 44px;
+  width:min(420px,92vw);
+  box-shadow:0 30px 80px rgba(0,0,0,0.6),0 0 60px rgba(152,229,221,0.05);
+  position:relative;z-index:1;
+}
+.login-brand{text-align:center;margin-bottom:30px;}
+.login-logo{width:70px;height:70px;object-fit:contain;margin-bottom:10px;}
+.login-title{font-family:'Cinzel',serif;font-size:28px;font-weight:900;letter-spacing:5px;color:white;}
+.login-sub{font-family:'Cinzel',serif;font-size:10px;color:rgba(152,229,221,0.6);letter-spacing:3px;margin-top:4px;}
+.login-field{margin-bottom:18px;}
+.login-field label{display:block;font-family:'Cinzel',serif;font-size:10px;font-weight:700;color:rgba(255,255,255,0.55);letter-spacing:1.5px;margin-bottom:6px;}
+.login-field input{
+  width:100%;padding:11px 16px;
+  background:rgba(255,255,255,0.07);
+  border:1.5px solid rgba(255,255,255,0.15);
+  border-radius:10px;color:white;
+  font-family:'Source Serif Pro',serif;font-size:14px;
+  outline:none;transition:0.3s;
+}
+.login-field input:focus{
+  border-color:#98E5DD;
+  background:rgba(152,229,221,0.08);
+  box-shadow:0 0 0 3px rgba(152,229,221,0.1);
+}
+.login-field input::placeholder{color:rgba(255,255,255,0.25);}
+.login-btn{
+  width:100%;padding:13px;border:none;border-radius:11px;
+  background:linear-gradient(135deg,#1a4a28,#2d7a3d,#1a4a28);
+  color:white;font-family:'Cinzel',serif;font-size:14px;
+  font-weight:700;letter-spacing:2px;cursor:pointer;
+  transition:0.3s;margin-top:4px;
+  box-shadow:0 4px 20px rgba(45,122,61,0.3);
+}
+.login-btn:hover{
+  background:linear-gradient(135deg,#2d7a3d,#5a8a50);
+  transform:translateY(-1px);
+  box-shadow:0 8px 28px rgba(45,122,61,0.4);
+}
+.login-error{
+  background:rgba(220,50,50,0.15);border:1px solid rgba(220,50,50,0.3);
+  border-radius:8px;padding:9px 14px;
+  font-family:'Cinzel',serif;font-size:11px;color:#ff9999;
+  text-align:center;margin-top:14px;display:none;
+}
+.login-error.show{display:block;}
+.login-user-badge{
+  text-align:center;margin-top:16px;
+  font-family:'Cinzel',serif;font-size:10px;
+  color:rgba(255,255,255,0.3);letter-spacing:1px;
+}
+
+/* ── USER MENU in sidebar ── */
+.user-info-bar{
+  padding:12px 16px;border-top:1px solid rgba(255,255,255,0.08);
+  display:flex;align-items:center;gap:10px;flex-shrink:0;
+}
+.user-avatar{
+  width:34px;height:34px;border-radius:50%;
+  background:linear-gradient(135deg,#1a4a28,#98E5DD);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Cinzel',serif;font-size:13px;font-weight:700;
+  color:white;flex-shrink:0;
+}
+.user-details{flex:1;min-width:0;}
+.user-name{font-family:'Cinzel',serif;font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.user-role{font-family:'Cinzel',serif;font-size:9px;color:rgba(152,229,221,0.7);letter-spacing:1px;}
+.logout-btn{
+  background:rgba(255,50,50,0.2);border:none;color:rgba(255,150,150,0.8);
+  padding:5px 8px;border-radius:7px;cursor:pointer;font-size:11px;
+  transition:0.2s;flex-shrink:0;
+}
+.logout-btn:hover{background:rgba(255,50,50,0.4);color:white;}
+
+/* ── ADMIN USER MANAGEMENT PAGE ── */
+#userMgmtView{display:none;}
+.user-card{
+  background:rgba(255,255,255,0.09);border-radius:12px;
+  padding:14px 18px;display:flex;align-items:center;gap:14px;
+  border:1px solid rgba(255,255,255,0.1);transition:0.2s;margin-bottom:8px;
+}
+.user-card:hover{background:rgba(255,255,255,0.14);}
+.user-card-avatar{
+  width:42px;height:42px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Cinzel',serif;font-size:16px;font-weight:700;color:white;
+  flex-shrink:0;
+}
+.user-card-info{flex:1;}
+.user-card-name{font-family:'Cinzel',serif;font-size:14px;font-weight:700;}
+.user-card-role{font-size:11px;opacity:0.6;margin-top:2px;}
+.user-card-pw{font-size:10px;color:rgba(152,229,221,0.7);margin-top:3px;font-family:'Cinzel',serif;}
+.user-card-actions{display:flex;gap:6px;}
+.pw-tag{
+  display:inline-block;background:rgba(152,229,221,0.15);
+  border:1px solid rgba(152,229,221,0.3);border-radius:6px;
+  padding:2px 8px;font-size:10px;font-family:'Cinzel',serif;
+  color:#98E5DD;letter-spacing:1px;
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ LOGIN SCREEN ═══════════════ -->
+<div id="loginScreen">
+  <div class="login-bg-pattern"></div>
+  <div class="login-box">
+    <div class="login-brand">
+      <img src="https://drive.google.com/uc?export=view&id=11WDN6obFLHYW3-OcSr39_wEnjq3lI_Jb" class="login-logo" onerror="this.style.display='none'">
+      <div class="login-title">MONZARA</div>
+      <div class="login-sub">TASK MANAGEMENT SYSTEM</div>
+    </div>
+    <div class="login-field">
+      <label><i class="fa-solid fa-user"></i> &nbsp;USERNAME</label>
+      <input type="text" id="loginUser" placeholder="Enter your username" autocomplete="off" onkeydown="if(event.key==='Enter')document.getElementById('loginPw').focus()">
+    </div>
+    <div class="login-field">
+      <label><i class="fa-solid fa-lock"></i> &nbsp;PASSWORD</label>
+      <input type="password" id="loginPw" placeholder="Enter your password" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <button class="login-btn" onclick="doLogin()">
+      <i class="fa-solid fa-right-to-bracket"></i> &nbsp; LOGIN
+    </button>
+    <div class="login-error" id="loginError">
+      ❌ Invalid username or password
+    </div>
+    <div class="login-user-badge">MONZARA &nbsp;·&nbsp; ROHIT TASK LIST</div>
+  </div>
+</div>
+
+<!-- ═══════════════ SIDEBAR ═══════════════ -->
+<div class="sidebar" id="mainSidebar" style="display:none;">
+  <div class="brand">
+    <img src="https://drive.google.com/uc?export=view&id=11WDN6obFLHYW3-OcSr39_wEnjq3lI_Jb" class="brand-logo" onerror="this.style.display='none'">
+    <span class="brand-text">MONZARA</span>
+  </div>
+  <div class="sidebar-nav">
+    <div class="nav-section">Main</div>
+    <a class="nav-link active" id="nl-dash" onclick="showPage('dash')"><span class="nav-icon"><i class="fa-solid fa-house"></i></span> Dashboard</a>
+    <a class="nav-link" id="nl-add" onclick="openAddTask()"><span class="nav-icon"><i class="fa-solid fa-plus"></i></span> Add Task</a>
+    <a class="nav-link" id="nl-cal" onclick="showPage('cal')"><span class="nav-icon"><i class="fa-solid fa-calendar-days"></i></span> Calendar</a>
+    <div class="nav-section">Data</div>
+    <a class="nav-link" id="nl-master" onclick="showPage('master')"><span class="nav-icon"><i class="fa-solid fa-database"></i></span> Master Data</a>
+    <a class="nav-link" id="nl-reminder" onclick="showPage('reminder')"><span class="nav-icon"><i class="fa-solid fa-bell"></i></span> Reminders</a>
+    <!-- ADMIN ONLY -->
+    <a class="nav-link admin-only" id="nl-users" onclick="showPage('users')" style="display:none;"><span class="nav-icon"><i class="fa-solid fa-users-gear"></i></span> Manage Users</a>
+    <div class="nav-section">More</div>
+    <a class="nav-link" id="nl-checklist" onclick="showToast('Checklist coming soon!')"><span class="nav-icon"><i class="fa-solid fa-list-check"></i></span> Checklist</a>
+  </div>
+  <!-- User info bar at bottom -->
+  <div class="user-info-bar">
+    <div class="user-avatar" id="sidebarAvatar">R</div>
+    <div class="user-details">
+      <div class="user-name" id="sidebarName">Rohit</div>
+      <div class="user-role" id="sidebarRole">ADMIN</div>
+    </div>
+    <button class="logout-btn" onclick="doLogout()" title="Logout">
+      <i class="fa-solid fa-right-from-bracket"></i>
+    </button>
+  </div>
+</div>
+
+<!-- ═══════════════ MAIN AREA ═══════════════ -->
+<div class="main" id="mainArea" style="display:none;">
+
+<!-- ──────── DASHBOARD ──────── -->
+<div id="dashView">
+  <div class="page-title">
+    <i class="fa-solid fa-house" style="font-size:20px;opacity:0.7"></i> Dashboard
+    <button onclick="loadData()" title="Refresh Data" style="margin-left:auto;background:rgba(152,229,221,0.18);border:1px solid rgba(152,229,221,0.35);color:#98E5DD;padding:6px 14px;border-radius:8px;cursor:pointer;font-family:'Cinzel',serif;font-size:11px;font-weight:700;transition:0.25s;display:flex;align-items:center;gap:6px;" onmouseover="this.style.background='rgba(152,229,221,0.32)'" onmouseout="this.style.background='rgba(152,229,221,0.18)'">
+      <i class="fa-solid fa-arrows-rotate"></i> REFRESH
+    </button>
+  </div>
+
+  <!-- Today Banner -->
+  <div class="today-banner" id="todayBanner">
+    <div>
+      <div class="today-date-label">TODAY</div>
+      <div class="today-date-val" id="todayLabel"></div>
+    </div>
+    <div id="todayChips" style="display:flex;flex-wrap:wrap;gap:4px;flex:1;margin-left:12px;"></div>
+    <div class="today-tasks-count" id="todayCount"></div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filter-bar">
+    <div class="fb-group"><label>FROM DATE</label><input type="date" class="fb-input" id="fFrom" style="width:130px" onchange="applyFilters()"></div>
+    <div class="fb-group"><label>TO DATE</label><input type="date" class="fb-input" id="fTo" style="width:130px" onchange="applyFilters()"></div>
+    <div class="fb-group"><label>STATUS</label>
+      <select class="fb-input" id="fStatus" onchange="applyFilters()">
+        <option value="">All Status</option>
+        <option>Pending</option><option>In Progress</option>
+        <option>Completed</option><option>Hold</option><option>Skip</option>
+      </select>
+    </div>
+    <div class="fb-group"><label>ASSIGNED TO</label>
+      <select class="fb-input" id="fAssigned" onchange="applyFilters()">
+        <option value="">All Members</option>
+        <option>Rohit</option><option>Nish</option>
+        <option>Kinjal</option><option>Axita</option><option>Ankit</option>
+      </select>
+    </div>
+    <div class="fb-group"><label>PARTY SEARCH</label><input type="text" class="fb-input" id="fSearch" placeholder="Party / Reason..." oninput="applyFilters()" style="width:160px"></div>
+    <button class="fb-btn fb-btn-today" onclick="filterToday()"><i class="fa-solid fa-calendar-day"></i> Today</button>
+    <button class="fb-btn fb-btn-clear" onclick="clearFilters()"><i class="fa-solid fa-xmark"></i> Clear</button>
+  </div>
+
+  <!-- Status Cards -->
+  <div class="status-cards">
+    <div class="s-card sc-completed" onclick="quickFilter('Completed')">Completed<h3 id="cnt-c">0</h3></div>
+    <div class="s-card sc-skip" onclick="quickFilter('Skip')">Skip<h3 id="cnt-s">0</h3></div>
+    <div class="s-card sc-hold" onclick="quickFilter('Hold')">Hold<h3 id="cnt-h">0</h3></div>
+    <div class="s-card sc-progress" onclick="quickFilter('In Progress')">In Progress<h3 id="cnt-p">0</h3></div>
+    <div class="s-card sc-pending" onclick="quickFilter('Pending')">Pending<h3 id="cnt-pn">0</h3></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- Table -->
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr>
+        <th>✓</th><th>Party Name</th><th>Agent</th><th>Contact</th>
+        <th>Coordinator</th><th>Reason</th><th>Date</th><th>Notes</th>
+        <th>Due Date</th><th>Status</th><th>Assigned</th><th>Actions</th>
+      </tr></thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ──────── CALENDAR ──────── -->
+<div id="calView">
+  <div class="page-title"><i class="fa-solid fa-calendar-days" style="font-size:20px;opacity:0.7"></i> Calendar</div>
+  <div class="cal-wrap">
+    <div class="cal-box">
+      <div class="cal-hdr">
+        <button class="cal-nav" onclick="chMonth(-1)">&#8249;</button>
+        <div class="cal-my" id="calMY"></div>
+        <button class="cal-nav" onclick="chMonth(1)">&#8250;</button>
+      </div>
+      <div class="cal-grid" id="calGrid"></div>
+    </div>
+    <div class="cal-notes-box">
+      <h3 id="calSelLabel"><i class="fa-solid fa-hand-pointer"></i> Select a date</h3>
+      <div id="calNotes"><div class="cnote-empty">Click any date to view tasks & notes.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ──────── MASTER DATA ──────── -->
+<div id="masterView">
+  <div class="page-title"><i class="fa-solid fa-database" style="font-size:20px;opacity:0.7"></i> Master Data</div>
+  <div class="master-tabs">
+    <button class="m-tab active" id="mt-party" onclick="switchMaster('party')"><i class="fa-solid fa-building"></i> Party List</button>
+    <button class="m-tab" id="mt-member" onclick="switchMaster('member')"><i class="fa-solid fa-users"></i> Team Members</button>
+    <button class="m-tab" id="mt-reason" onclick="switchMaster('reason')"><i class="fa-solid fa-tag"></i> Reasons</button>
+  </div>
+  <!-- Party Tab -->
+  <div id="master-party">
+    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+      <input type="text" class="master-search" id="partySearch" placeholder="🔍  Search party name..." oninput="renderParties()">
+      <button class="master-add-btn" onclick="openAddParty()"><i class="fa-solid fa-plus"></i> Add Party</button>
+    </div>
+    <div class="mini-form" id="addPartyForm" style="display:none;">
+      <input type="text" id="newPartyName" placeholder="Party Name" style="min-width:220px">
+      <button class="mf-btn" style="background:#98E5DD;color:#1a3324" onclick="addParty()">+ Add</button>
+      <button class="mf-btn" style="background:rgba(255,80,80,0.3);color:white" onclick="document.getElementById('addPartyForm').style.display='none'">Cancel</button>
+    </div>
+    <div class="party-grid" id="partyGrid"></div>
+  </div>
+  <!-- Member Tab -->
+  <div id="master-member" style="display:none;">
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center;">
+      <button class="master-add-btn" onclick="openAddMember()"><i class="fa-solid fa-plus"></i> Add Member</button>
+    </div>
+    <div class="mini-form" id="addMemberForm" style="display:none;">
+      <input type="text" id="newMemberName" placeholder="Member Name" style="min-width:180px">
+      <select id="newMemberRole" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.25);border-radius:8px;color:white;padding:7px 11px;font-size:12px;outline:none;">
+        <option value="Member">Member</option>
+        <option value="Admin">Admin</option>
+      </select>
+      <button class="mf-btn" style="background:#98E5DD;color:#1a3324" onclick="addMember()">+ Add</button>
+      <button class="mf-btn" style="background:rgba(255,80,80,0.3);color:white" onclick="document.getElementById('addMemberForm').style.display='none'">Cancel</button>
+    </div>
+    <div class="party-grid" id="memberGrid"></div>
+  </div>
+  <!-- Reason Tab -->
+  <div id="master-reason" style="display:none;">
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center;">
+      <button class="master-add-btn" onclick="openAddReason()"><i class="fa-solid fa-plus"></i> Add Reason</button>
+    </div>
+    <div class="mini-form" id="addReasonForm" style="display:none;">
+      <input type="text" id="newReasonName" placeholder="Reason Label" style="min-width:200px">
+      <button class="mf-btn" style="background:#98E5DD;color:#1a3324" onclick="addReason()">+ Add</button>
+      <button class="mf-btn" style="background:rgba(255,80,80,0.3);color:white" onclick="document.getElementById('addReasonForm').style.display='none'">Cancel</button>
+    </div>
+    <div class="party-grid" id="reasonGrid"></div>
+  </div>
+</div>
+
+<!-- ──────── REMINDERS ──────── -->
+<div id="reminderView">
+  <div class="page-title"><i class="fa-solid fa-bell" style="font-size:20px;opacity:0.7"></i> Reminders</div>
+  <button class="add-rem-btn" onclick="openAddReminder()"><i class="fa-solid fa-plus"></i> Add Reminder</button>
+  <div class="rem-list" id="remList"></div>
+</div>
+
+<!-- ──────── USER MANAGEMENT (ADMIN ONLY) ──────── -->
+<div id="userMgmtView">
+  <div class="page-title"><i class="fa-solid fa-users-gear" style="font-size:20px;opacity:0.7"></i> Manage Users</div>
+  <button class="add-rem-btn" onclick="openAddUser()"><i class="fa-solid fa-user-plus"></i> Add New User</button>
+
+  <!-- Add User Form -->
+  <div class="mini-form" id="addUserForm" style="display:none;background:rgba(0,0,0,0.3);border:1px solid rgba(152,229,221,0.2);">
+    <div style="width:100%;font-family:'Cinzel',serif;font-size:12px;color:#98E5DD;margin-bottom:4px;">NEW USER</div>
+    <input type="text" id="newUserName" placeholder="Username (e.g. nish)" style="min-width:140px">
+    <input type="text" id="newUserDisplay" placeholder="Display Name (e.g. Nish)" style="min-width:140px">
+    <input type="password" id="newUserPw" placeholder="Password" style="min-width:140px">
+    <select id="newUserRole" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.25);border-radius:8px;color:white;padding:7px 11px;font-size:12px;outline:none;">
+      <option value="member">Member</option>
+      <option value="admin">Admin</option>
+    </select>
+    <button class="mf-btn" style="background:#98E5DD;color:#1a3324" onclick="addUser()"><i class="fa-solid fa-plus"></i> Add</button>
+    <button class="mf-btn" style="background:rgba(255,80,80,0.3);color:white" onclick="document.getElementById('addUserForm').style.display='none'">Cancel</button>
+  </div>
+
+  <div id="userList" style="max-width:650px;"></div>
+</div>
+
+</div><!-- /main -->
+
+<!-- ═══════════════ OVERLAY ═══════════════ -->
+<div id="overlay" onclick="closeAllPanels()"></div>
+
+<!-- ═══════════════ STATUS MODAL ═══════════════ -->
+<div class="modal-wrap" id="statusModal">
+  <div class="modal-bg" onclick="closeStatusModal()"></div>
+  <div class="modal-box">
+    <h3><i class="fa-solid fa-pen-to-square"></i> Change Status</h3>
+    <div id="smp" style="font-size:11px;opacity:0.6;margin-bottom:10px;"></div>
+    <button class="modal-s-btn" style="background:linear-gradient(135deg,#5a7a30,#BBAB47);color:white" onclick="applyStatus('Completed')">✅ Completed</button>
+    <button class="modal-s-btn" style="background:linear-gradient(135deg,#c9a830,#CDD7D8);color:#222" onclick="applyStatus('In Progress')">🔄 In Progress</button>
+    <button class="modal-s-btn" style="background:linear-gradient(135deg,#8B4000,#354024);color:white" onclick="applyStatus('Pending')">⏳ Pending</button>
+    <button class="modal-s-btn" style="background:linear-gradient(135deg,#0B2839,#c47825);color:white" onclick="applyStatus('Hold')">⏸ Hold</button>
+    <button class="modal-s-btn" style="background:linear-gradient(135deg,#333,#555);color:white" onclick="applyStatus('Skip')">⏭ Skip</button>
+    <button class="modal-cancel" onclick="closeStatusModal()">Cancel</button>
+  </div>
+</div>
+
+<!-- ═══════════════ REMINDER ADD MODAL ═══════════════ -->
+<div class="modal-wrap" id="remModal">
+  <div class="modal-bg" onclick="closeRemModal()"></div>
+  <div class="modal-box" style="width:360px;">
+    <h3><i class="fa-solid fa-bell"></i> Add Reminder</h3>
+    <div class="fg" style="margin-bottom:10px;">
+      <label>Message *</label>
+      <input type="text" id="remMsg" placeholder="Reminder message...">
+    </div>
+    <div class="fg" style="margin-bottom:10px;">
+      <label>Date &amp; Time *</label>
+      <input type="datetime-local" id="remDT">
+    </div>
+    <div class="fg" style="margin-bottom:10px;">
+      <label>Party (optional)</label>
+      <div class="autocomplete-wrap">
+        <input type="text" id="remParty" placeholder="Link to a party..." oninput="acParty('remParty','remAcList')" autocomplete="off">
+        <div class="autocomplete-list" id="remAcList"></div>
+      </div>
+    </div>
+    <div style="background:rgba(0,0,0,0.25);border-radius:10px;padding:12px;margin-bottom:12px;">
+      <div style="font-family:'Cinzel',serif;font-size:10px;color:#98E5DD;letter-spacing:1px;margin-bottom:8px;">🔁 SNOOZE SETTINGS</div>
+      <div class="fg" style="margin-bottom:8px;">
+        <label>Repeat Every (minutes)</label>
+        <input type="number" id="remRepeatMins" placeholder="e.g. 10" min="1" max="120" value="10" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.25);border-radius:7px;color:white;padding:6px 10px;font-size:12px;outline:none;width:100%">
+      </div>
+      <div class="fg" style="margin-bottom:0;">
+        <label>Max Repeats</label>
+        <input type="number" id="remMaxRepeats" placeholder="e.g. 5" min="1" max="50" value="5" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.25);border-radius:7px;color:white;padding:6px 10px;font-size:12px;outline:none;width:100%">
+      </div>
+    </div>
+    <button class="submit-btn" onclick="saveReminder()" style="margin-top:0;">🔔 Save Reminder</button>
+  </div>
+</div>
+
+<!-- ═══════════════ ADD/EDIT TASK PANEL ═══════════════ -->
+<div id="taskPanel" class="slide-panel">
+  <div class="sp-hdr">
+    <h2 id="panelTitle"><i class="fa-solid fa-plus"></i> ADD NEW TASK</h2>
+    <button class="sp-close" onclick="closeAllPanels()">✕</button>
+  </div>
+  <div class="sp-body">
+    <input type="hidden" id="editTaskId">
+    <div class="fg-row">
+      <div class="fg">
+        <label><i class="fa-solid fa-building"></i> Party Name *</label>
+        <div class="autocomplete-wrap">
+          <input type="text" id="tParty" placeholder="Type to search party..." oninput="acParty('tParty','tPartyAc')" autocomplete="off">
+          <div class="autocomplete-list" id="tPartyAc"></div>
+        </div>
+      </div>
+      <div class="fg">
+        <label><i class="fa-solid fa-user-tie"></i> Agent Name</label>
+        <input type="text" id="tAgent" placeholder="Agent name">
+      </div>
+    </div>
+    <div class="fg-row">
+      <div class="fg">
+        <label><i class="fa-solid fa-phone"></i> Contact Number</label>
+        <input type="tel" id="tContact" placeholder="+91 XXXXX XXXXX">
+      </div>
+      <div class="fg">
+        <label><i class="fa-solid fa-people-arrows"></i> Co-ordinator</label>
+        <input type="text" id="tCoord" placeholder="Coordinator name">
+      </div>
+    </div>
+    <div class="form-div"></div>
+    <div class="fg-row">
+      <div class="fg">
+        <label><i class="fa-solid fa-tag"></i> Reason To Call *</label>
+        <select id="tReason">
+          <option value="">-- Select --</option>
+        </select>
+      </div>
+      <div class="fg">
+        <label><i class="fa-solid fa-user-check"></i> Assigned To *</label>
+        <select id="tAssigned">
+          <option value="">-- Select Member --</option>
+        </select>
+      </div>
+    </div>
+    <div class="fg-row">
+      <div class="fg"><label><i class="fa-solid fa-calendar"></i> Date</label><input type="date" id="tDate"></div>
+      <div class="fg"><label><i class="fa-solid fa-calendar-check"></i> Due Date</label><input type="date" id="tDue"></div>
+    </div>
+    <div class="fg"><label><i class="fa-solid fa-note-sticky"></i> Notes</label><textarea id="tNotes" placeholder="Notes or remarks..."></textarea></div>
+    <div class="fg">
+      <label><i class="fa-solid fa-chart-line"></i> Work Status</label>
+      <select id="tStatus">
+        <option value="Pending">⏳ Pending</option>
+        <option value="In Progress">🔄 In Progress</option>
+        <option value="Completed">✅ Completed</option>
+        <option value="Hold">⏸ Hold</option>
+        <option value="Skip">⏭ Skip</option>
+      </select>
+    </div>
+    <button class="submit-btn" id="submitBtn" onclick="submitTask()">
+      <i class="fa-solid fa-paper-plane"></i>&nbsp; SUBMIT TASK
+    </button>
+  </div>
+</div>
+
+<!-- ═══════════════ BIG BLOCKING REMINDER POPUP ═══════════════ -->
+<div id="bigReminderOverlay">
+  <div class="big-rem-box">
+    <div class="big-rem-bell">🔔</div>
+    <div class="big-rem-title">REMINDER!</div>
+    <div class="big-rem-msg" id="bigRemMsg"></div>
+    <div class="big-rem-party" id="bigRemParty"></div>
+    <div class="big-rem-count" id="bigRemCount"></div>
+    <div class="big-rem-timer" id="bigRemTimer"></div>
+    <div class="big-rem-btns">
+      <button class="big-rem-btn brb-done" onclick="dismissBigReminder()">✅ Mark Complete</button>
+      <button class="big-rem-btn brb-snooze" id="snoozeBtn" onclick="snoozeBigReminder()">⏰ Snooze Again</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ REMINDER POPUP CONTAINER ═══════════════ -->
+<div class="rem-popup" id="remPopupContainer"></div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- ═══════════════════════ SCRIPT ═══════════════════════ -->
+<script>
+// ════════════════════════════════════════
+//  STATE
+// ════════════════════════════════════════
+let allTasks = [];
+let statusTargetId = null;
+let editMode = false;
+let calYear = new Date().getFullYear();
+let calMonth = new Date().getMonth();
+let selCalDate = null;
+let masterTab = 'party';
+
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+// ─── Dynamic master data (editable) ───
+let PARTIES = [
+  "A M TRADERS","A MODE","SRI JALARAM KUTEER","AADARAN FASHIONS","AARYA",
+  "ABHINANDAN BUSINESS CENTRE PRIVATE LIMITED","ABHISHEK","ADAM WORLD","ADANI CREATION",
+  "ADONIS","AGARWAL READYMADE CENTER","AGRAWAL CLOTH STORE","AHUJA CLOTHIERS PVT LTD",
+  "AHUJA VASTRA BHANDAR","A ONE INTERNATIONAL (J K ROYAL)","AJARAMAR CREATION",
+  "AJAY ARVINDBHAI KHATRI","ALISHAN","ALLER","ALLOL SAREES PRIVATE LIMITED","AMANTRAN",
+  "AMARSARIYA FASHIONS","AMAZING","AMBER","AMBICA CLOTH STORES","AMRIT SUIT (SAGUN)",
+  "ANKIT SAREES","ANKUSH GUPTA","ANSHH DESIGNER STUDIO","ANTARMAN COLLECTION",
+  "ARADHANA THE FASHION MALL","ARHAM (VAGAD VASHI)","ARIHANT AGENCIES","ARUSH APPARELS",
+  "ASHA COLLECTION","ASHIRWAD","ASHIRWAD ELITE","ASHIRWAD FASHION WORLD","ASHISH SELECTION",
+  "ASHOKA EMPORRIO","ASMERA FASHION PRIVATE LIMITED","AV FAMILY WEARS PRIVATE LIMITED",
+  "AVASAR FETAWALA","AVEER LIFESTYLE LLP (C)","AVEER LIFESTYLE LLP (E)","AVEER LIFESTYLE LLP (O)",
+  "B C IMPEX (SALE)","BACHOOMAL COLLECTION","BADA SAAB","BADA SAAB GARMENTS (P) LTD.",
+  "BAFNA'S MENS WEAR","BAHURANI","BALAJI COLLECTION","BALAJI MENS STUDIO","BALDEV RAJ & SONS",
+  "BALJEET DESIGNER STUDIO","BANARSI LEHNGA HOUSE","BANSIDHAR UTSAV","BANSILAL DIGITAL",
+  "BARNALA SAREE EMPORIO","BASHIR AHMED MIR","BATRA JI LEHNGE WALE","BATRA SELECTION",
+  "BESTSELLER CLOTHING","BHAI BHAI FASHION","BHASIN BROTHERS (AMINABAD)",
+  "BHASIN BROTHERS (GOMATINAGAR)","BHATIA'S INTERNATIONAL","BHUMI JUNCTION NX","BIG SHOP",
+  "BIGMU PRIVATE LIMITED","BIGSHOT WORLD","BINAS COLLECTION (NEW)","BISMILLAH LEHANGA SHOP",
+  "BITTU BANGLE ART JEWELLERY","BLUE STAR TAILORS","BODY LINE ETHNIC (HARESHBHAI)","BOTTOM",
+  "C P SINGH","CALCUTTA IN STYLE","CARRON FASHIONS","CARRON NX","CDS GARMENTS PVT.LTD",
+  "CELEBRATIONS BY MANOHAR","CHANDRA ENTERPRISE","CHHOTTI BARADARI","CLASSIC GROOOM HOUSE",
+  "CLOTHING SECRETS","COLECTIVO RETAIL","CRAZY GARMENTS","DANISH ABDULLAH","DARSHAN MENS",
+  "DEEPMALA DESIGNERS","DEEPU DI HATTI","DELUXE FASHION STORE","DEV BROS SONS","DEVAA ANNEX",
+  "DHAGAA","DHANI RAM RONAQ RAM","DIMPLE COLLECTION","DIMPLE FASHION","DINESH COLLECTION",
+  "DULHA COLLECTION","DULHA DULHAN READYMADE","DULHA GALLERY","DULHA GHAR PRIVATE LIMITED",
+  "DULHA HOUSE","DULHA HUT","DULHAPAKSH-NEW YES BOSS","DULHE RAJA","DULHE SAHAB",
+  "EROS EXCLUSIVE","ETHNICS BY NEXT GENERATION","EVER SMART","FAIR LADY DESIGNER PVT LTD",
+  "FASHION CULTURE","FEMINA LEHENGA HOUSE","G G IMPEX","G 9","GANPATI COLLECTION FOR MENS",
+  "GARG FASHION POINT","GARODIA LIFESTYLE - KATIHAR","GAVINS","GEETANJALI","GEN X CLUB",
+  "GENTLEMAN ETHENIC","GHAR SHAGNA DA","GINNI APPAREL","GIVE AND TAKE","GIVE AND TAKE VIVAH",
+  "GOBIND TEXTILES","GOBINDDHAM APPARELS","GOLDEN THREAD","GOPAL BROS","GOPAL EMPORIUM PVT LIMITED",
+  "GOPALSONS","GROOM STUDIO","GROOM STUDIO BY LIBAS","GROVER CREATIONS","GROVER GARMENTS",
+  "GUJRAL SONS","GULLU EXCLUSIVE","GULSHAN COLLECTION","GUPTA COLLECTION","GURU JI CREATION",
+  "GURU NANAK SILK HOUSE","GURUKIRPA GARMENTS","GURUNANAK MENS WEAR","HANDA CLOTH HOUSE",
+  "HAROON ALI","HARSONI","HIRA S RETAIL","HMK APPARELS","HOUSE OF ROYALS","I S FASHIONS",
+  "IMPERIAL ETHNIC PRIVATE LIMITED","INDIANS BOUTIQUE","IQBAL FASHION","J J NX",
+  "J.M.TEXTILES & FASHIONS","JAAMSHO CREATIONS","JADE BLUE LIFESTYLE INDIA LIMITED",
+  "JAGDISH ETHNIC WEAR","JAGDISH ETHNIC WEAR - PUNE","JAHANPANAH CLOTHING PVT LTD",
+  "JAIHIND (JC NASIK)","JAIN COLLECTION","JAIN COLLECTION KELLYS","JAITILAK CREATIONS",
+  "JAK'S ETHNIC","JAMAI RAJA","JANATA TRADERS","JANSEVAK","JARIKALA MEN'S","JASH ENTERPRISES",
+  "JAYALAXMI SILKS","JC CLOTHINGS PRIVATE LIMITED","JC INSTYLE FASHION LLP","JEET FASHION MALL",
+  "JEET NX PRIVATE LIMITED","JM JAIN LLP","JODHPURI COLLECTION","JOLLY FASHION","JP TEXTILES",
+  "JSK LIFE STYLE (DRESS LAND)","K C FASHION MALL","K K SAFA SHERWANI","K M FASHIONS",
+  "K P JUNCTION","K R SAREES","K.R. ENTERPRISES","KAHAAN CREATION","KALAPI MENS",
+  "KAMAL FASHION","KAMBAL GHAR EXCLUSIVE","KARAMCHAND JEEWATRAM","KARMIC DESIGN CLOTHING",
+  "KASHMIRI RETAIL LLP","KATHIYAWAD RETAIL PRIVATE LIMITED","KAY SONS","KCS FASHION","KENZER",
+  "KESHAR AHMAD","KEZAL COLLECTION","KHANNA KALA NIKETAN","KHATRI","KING WORLD",
+  "KLASSIC NX MENS WEAR","KOHINOOR CLOTH STORES LLP - UNIT 1","KOKCHA COLLECTION",
+  "KOTHARIS - HUBBALLI","KRISHAN KUMAR & SONS","KRISHNA MENS WEAR-LATUR","KRISHNARAJ",
+  "L.K. DESIGNER STUDIO","LAXMI BAZAR","LAXMI CREATIONS","LAXMI VASTRALAY",
+  "LAXMINARAYAN PRINT","LOHCHAB SONS","LOHIYA STORE","LUCKY STORE","M S ETHNIC",
+  "M/S NEW DULHA GHAR","MADAN COLLECTIONS","MADAN STORES","MADHUMAN (ROYAL ETHNICS)",
+  "MAHANTA","MAHAVIR COLLECTIONS","MAHAVIR CREATION - WARDHA","MAHAVIR-NX PRIVATE LIMITED",
+  "MALIK CLOTHING","MAN IN PRIDE","MANDAP ETHNIC WORLD","MANGALAM (GURUKUL-AMD)",
+  "MANGALDEEP CLOTHING LLP","MANMANDIR ETHNIC","MANMANDIR TRADITIONAL","MANTRA DESIGNER STUDIO",
+  "MANYAVAR","MARVADI CREATION","MEERUT FINE","MEGA MALL BARSHI","MENS AVENUE BY MILAN",
+  "MENS CREATION","MENS ETHICS","MEWAD","MIHANO ETHNIC","MIJAAJ MENS ETHNIC WEAR",
+  "MILAN (BANGALORE)","MITRON","MOHANLAL SONS","MOHINDRA CLOTH HOUSE","MOM N ME",
+  "MONISH APPARELS","MONZARA","MOODY MUNDA","MOSCOW BOUTIQUE","MOTA WOOLEN HOUSE",
+  "MS COLLECTION","MUKESH FASHION - NEW","MUKUTWALA STUDIO","MUNOT MENS WEAR","N W W",
+  "N. H. FASHION","NAGRIK FASHION TOWER","NALANDA CREATION","NALANDA FASHION",
+  "NAMASKAR MENS WEAR (UNIT-1)","NANAK HOUSE OF READYMADE","NANAKFAMILY SHOP",
+  "NASIR BESPOKE","NAVRATTAN JEWELLERY","NEMA SAFA HOUSE","NEW BOND SUITS",
+  "NEW GAURAV HOSIERY WORKS","NEW JODHPURI SAFA AND SHERWANI HOUSE","NEW SIR MENS WEAR",
+  "NEW VASTRALOK - GHAZIABAD","NEW WEAR WELL ETHNIC","NEWYORK FASHION","ODDISH CREATION",
+  "OLIB APPARELS PVT. LTD.","ONLINE DIMPLE COLLECTION","ONLINE THE MENS WORLD",
+  "ORBIT THE MENS PLANET","OUT AND OUT","OUTFIT","OUTFIT STUDIO","OVERTAKE EXCLUSIVE",
+  "PADAM KAPADA BAZAR","PADAM MEHTA TEXTILES","PAKIZA RETAIL PRIVATE LIMITED","PALLAV ETHNIC",
+  "PALLS ETHNIC","PANACHE HIGH END FASHION","PANDAV ETHNIC STUDIO","PARAM FABRIC",
+  "PARAMPARA","PARAS ETHNIC","PARASMANI","PARDESHI FAMILY BAZAR","PARICHAY","PARIDHAN",
+  "PARIDHAN (KALYAN)","PARIDHAN COLLECTION","PARIVAR CEREMONY","PARSH ETHNIC WEAR",
+  "PARTH TEXTILES","PARVEEN GENERAL STORE","PATEL NEHA PARESHBHAI","PATIDAR EXCLUSIVE",
+  "POOJA ETHNIC","POOJA GARMENT","POOJA PLUS","POPULAR SERVICES","PORWAL RETAIL PVT LTD",
+  "PRABHU","PRABHU DULHA COLLECT","PRAKASH STORE","PRESIDENT S GROOM CONCEPTS",
+  "PRITHVI CLOTH STORES","PRIYAVAR","R J STUDIO","R K MANIYAR CREATION","R L JAJEE MEGA STORE",
+  "R.B. ENTERPRISES","R.K.TRADERS (NIKHAR)","R.R. FASHIONS","R.R.CLOTHING",
+  "RADHA LEHNGA HOUSE","RADHIKA COLLECTION","RADHIKA NX","RAGHAV CREATIONS","RAGHAVS",
+  "RAJ CLOTH (UNIT – 1)","RAJ CLOTH (UNIT – 2)","RAJ CLOTH STORES","RAJ RATAN",
+  "RAJA BABU FASHION WORLD","RAJA SAHAB","RAJA SHAHI","RAJAN ENTERPRISES",
+  "RAJANIKANT CO","RAJDARBAR MENS WEAR","RAJDEEP APPARELS","RAJKAMAL APPARELS",
+  "RAJOO INDIA","RAJSHREE EMPORIUM","RAJVANSH","RAJWADA THE FASHION STUDIO",
+  "RAJWADI COLLECTIOON","RAJWADI MENS WEAR PVT. LTD.","RAJWADI ONLINE","RAM GOLYA & SONS",
+  "RAM GOLYA FASHION","RAMA CREATION","RANA JI","RANI JI","RAYABA ETHNIC STUDIO",
+  "RCM APPARELS PRIVATE LIMITED","RED DESIGNER STUDIO","RHAPSO","RHYTHM",
+  "RICKS GENTS BOUTIQUE COLLECTION","RINKU MAHESHWANI","RIRONSI COUTURE LLP",
+  "RISHTA APPARELS PRIVATE LIMITED","RIYAASAT LIFESTYLE LIMITED","RK LEHENGA HOUSE",
+  "ROCHALDAS SONS","ROOHDAAR INDIA - UNIT 1","ROOP VERSHA NX","ROOPAM CLOTH CENTER",
+  "ROYAL ETHNICS","ROYAL RIWAAZ","ROYAL SUIT CO","ROYAL WEDDING COLLECTIONS",
+  "RSB RETAIL INDIA LIMITED","RULERO FASHION LLP","RUSHABH MENSWEAR","S.F CLOTHING CO",
+  "S.S.T. TRADING CO.","S.W. RETAILS LLP","SAABJEE ROYAL SHERWANI HUB","SAJAN SELECTIONS",
+  "SAMARA COUTURE (RIWAAJ)","SAMYAK FABRICS","SANCHETI MENS WEAR","SANSKAR",
+  "SANSKAR CREATION","SANSKRUTI FASHIONS","SAPPHIRE","SATYAM MALL","SEEMA SUIT SAREES",
+  "SEEMATTI - ERNAKULAM","SEEMATTI - KOTTAYAM","SELECTION ETHNIC WEAR",
+  "SELECTION FASHION WORLD","SHAH APPAREL","SHAHI LIBAS","SHAKUNTALA APPARELS",
+  "SHANKERLAL LILARAM","SHARMA FASHIONS","SHEENEZ WEDDING CASTLE","SHERWANI HOUSE",
+  "SHERWANI SONS","SHILP INDIA","SHIV IMPEX","SHIVHARE GARMENTS","SHIVJI RAKHI WALA",
+  "SHIVLANI & SONS","SHREE BALAJI APPARELS","SHREE BALAJI CREATIO","SHREE COMMERCIAL TEXTILES",
+  "SHREE RAM VASTRA BHANDAR","SHREE SANSKAR NX","SHREE SAWAN BAZAR",
+  "SHREEJI DESIGNER STUDIO","SHREEMAAN - INRAHIMPURA","SHREEMAN",
+  "SHREENATH CLOTHING LLP","SHRI RAM TEXTILES","SHUBH LAGAN","SHUBH VIVAH",
+  "SHUBHMANGAL ENTERPRISE","SODHI CREATIONS","SONU EMPORIUM LLP","SRIVAARU MENS AVENUE",
+  "STALLINO FASHION","STATUS ELEGANCE (AMD)","STATUS EXCLUSIVE","STATUS FASHION(AMD)",
+  "STEELMAN","STILLMAN FASHION","STUDIO BY PRITHVIRAJ (MENS)","STUDIO RX","SUDHA SHRI",
+  "SUDHIR BHAI LEHAGE WALA","SUMIT FABRICS","SUNDARAM","SUNDRIES","SUNNY GARG",
+  "SURANI DESIGNER","SURESH COLLECTION & CREATION","SUVIDHAFASHION","SWASTIK CLOTHING CO.",
+  "TARGET","TEENAGERS","THAR LIFESTYLE PVT.LTD","THE CHENNAI SILKS","THE COSMOS",
+  "THE DESTINY","THE GROOM PALACE","THE GROOM STORE","THE REFLECTION ENTERPRISES",
+  "THE STITCHERY","THE STYLE STUDIO","THE SUPERB DESIGNERS","THE VEER DESIGNER",
+  "THREADBUCKET STUDIO LLP","THUKRALS ETHNIC","TIWARI BROSS","TONNY PLUS","TONY TAILOR",
+  "TOP SHOP","TOPMAN DESGINER STUDIO","TOWN FAB","TRENDS OF INDIA","TRENDZ PRIVATE LIMITED",
+  "TRIAGE INDUSTRIES PVT LTD","TRIBHUVAN GARMENTS","UDAY (HUKUMCHAND - UNIT 1)","UNI VASTRR",
+  "UVAAM CREATION PVT.LTD.","V G CLOTHING CORPORATION","VAGADS","VAGADS (CHEMBUR-KALYAN)",
+  "VANDANA READYMADE","VARAD","VARKANYA FASHION STUDIO","VASTR","VED KALA",
+  "VEDANT FASHIONS LIMITED","VEERA","VELLORA FASHION","VIDYARTHI READYMADE","VIJAY NX",
+  "VIJAY TEXTILES","VIKAS - GANGANAGAR","VIMAL TRADING CO","VISHAL ETHNIC PRIVATE LIMITED",
+  "VISHAL GARMENTS","WEDDING WORLD","YASHMENS SHOP","YASHOVASTRAM","YUGAM","Z PLUS",
+  "ZED-9 DESIGNER STUDIO","ZENITH FASHIONS PRIVATE LIMITED","ZO PLUS","ENZED GLOBAL PRIVATE LIMITED",
+  "ARIHANT MOHIT","ATAM PRAKASH & SONS","BATTLE HARBOUR DESIGN STUDIO","BINA'S COLLECTIONS (NEW)",
+  "BINA'S COLLECTIONS (OLD)","CREATERS VILLA","DEVMATA ENTERPRISE","DEWAN SONS",
+  "DORIYA CREATION","G.FAB","GANGETI FABRIC","GAUTAM'S COMPLETE WARDROBE FOR MEN",
+  "HAPPY SHOPPING CENTRE","JINAAM","KASTURI FABRICS","KATARIA DUPATTA HOUSE",
+  "KLASSIC NX FASHION","KRISHNA FABRICS","LAKSHAY TEXTILE","LIBAS MAHAL","M/S VIKAS TRADERS",
+  "MAA AMBEY ENTERPRISE","MANTRA ETHNIC","MODI FAB","MUKUL FASHION","N.W.W.HOUSE OF READYMADE GHARMENTS",
+  "NEW AWAL WOOL & GARMENT","NISHTHA ENTERPRISES PVT LTD","PADMAVATI TEXTILES",
+  "PANNCHWATI SILK","PAVAN GARMENTS","RAHMANI MENS WEAR","RAJABABU FASHION WORLD",
+  "RAJWADA THE ROYAL TOUCH","RAM SONS","SAGAR EXPORTS","SAIJAL CREATION","SHAHI HANDICRAFTS",
+  "SHEENE'Z WEDDING CASTLE","SHRIRAM ETHNICS","SIDDHI PRINT","SIDDHI VINAYAK FASHION",
+  "STEEL LIFESTYLE","T/S NAMDHARI TAILORS","THE DRESSERY","TILAK SILK STORE","UDAIRAM & SONS",
+  "UPASANA","VAGAD'S (CHEMBUR)","VAIBHAV LAXMI FABRICS","VALHAREE TRENDZ",
+  "VIKAS FASHIONS PVT.LTD.","VINTAGE FASHION","WEDDING SQUARE","YUVRAJ",
+  "ASHIESH NX PRIVATE LIMITED (UNIT - 3)","DULHA GALLERY - AMBALA","DULHA GALLERY - DEHRADUN",
+  "DULHA GALLERY - HISAR","DULHA GALLERY - LUDHIANA","DULHA GALLERY - SAS NAGAR",
+  "G.M. EXPORTS","KANISHQ CREATION","KHUSHAL FASHION (GST)","KORAT SILKS",
+  "MAHANTA (MANYAVAR)","MAHANTA(HSR)","MOHAMMED CAP MART (ABIDS)","MUKESH TEXTILES",
+  "NAMASKAR INSTYLE PRIVATE LIMITED- UNIT 2","POSHAQ","SAKHI THE WEDDING PLAZA",
+  "SHAHI HANDICRAFT","UDAY (HUKUMCHAND SHANTIKUMAR BROS)","WESTERN TRADE HUB(VINAY DUBAI)",
+  "HOUSE OF SHERWANIS","MAN O MAN - VIJAYAWADA","MAN O MAN - GUNTUR","PIONEER SHOES",
+  "EDEN MENS WEAR","THAKURDAS LOTWALA","CHIRAG","NAYA UNIQUE","KAPOOR BESPOKE HOUSE",
+  "NEW AMBICA EXCLUSIVE","CRYSTAL TRADITIONAL WEAR - RIYAASAT BHAVANAGAR",
+  "ZAREE TRENDS PRIVATE LIMITED","DULHE WALE - DURG","DULHAN LEHNGA HOUSE","MEGHNA",
+  "CHIYA FASHIONS","HASIJA COLLECTION","APMP LIFESTYLE LLP","ADANI SELECTION","DRESS LAND",
+  "KAILASH SAREE HOUSE","KURTA GHAR","SUITS HIM","HAPPY STORES",
+  "SGB HOSPITALITY & TRADING LLP (AARA STYLE)","AGOG CREATIONS","PICK & PACK MEGAMART",
+  "TAJARA COUTURE LLP","GEETA WHOLESALE MART","JAIN BROTHERS PRIVATE LTD",
+  "GURU KRIPA – SILIGURI","GALA CREATIONS","BHARAT JEANS(ROHINI)","BHARAT COUTURE(RAJORI GARDEN)",
+  "BHARAT DESINER WEAR","NARANG GARMENTS","J DADLANI COUTURE PRIVATE LIMITED (COUPLES COUTURE)",
+  "S R TEXTILES","MONGA IMPEX PRIVATE LIMITED","ISHWAR NX","SHIV SHANKER VASTRALYA",
+  "MORNI SAREES PVT LTD","MANOHARLAL FASHIONS","SHREE KRISHNA MENS WEAR-LATUR",
+  "AKASH GANGA WORLD","VADHUVAR","DEV RAJ BHARAT BHUSHAN","THE CLOSET (DELHI)",
+  "THE CLOSET (NOIDA)","ANANTAA TEXTILE","SINDHUJA FASHIONS PVT LTD","BIZZARE",
+  "NATIONAL STORES","SOFINE CLOTHINGS","GOENKA SHOPPE","SHREEMAN SHREEMATI",
+  "SUVIDHA FASHION ZONE","RATAN CREATION","KAILASH LEHNGA CENTRE",
+  "MANMOHINI TEXTILE PRIVATE LIMITED","NAGARMAL SHEONARAIN & SONS","KALPANA SAREE",
+  "SUNNY NX","VJ CLOTHING – GWALIOR","GANGOTRI NX","NEW KHADIM KURTA","MG FASHION",
+  "MANISH MENS MALL","NEW KUMAR'S COLLECTION","VIBEVIRA","RAJPUTANA CLOTHINGS",
+  "HOLLY WOOD NX","MOOLCHAND MILL PVT. LTD. (HADAPSAR WAREHOUSE)",
+  "MOOLCHAND MILL PVT. LTD. (PCMC WAREHOUSE)","SRIKRITI","RICH CREATIONS"
+];
+PARTIES = [...new Set(PARTIES)].sort();
+
+let MEMBERS = [
+  {name:'Rohit',role:'Admin'},
+  {name:'Nish',role:'Member'},
+  {name:'Kinjal',role:'Member'},
+  {name:'Axita',role:'Member'},
+  {name:'Ankit',role:'Member'}
+];
+
+let REASONS = ['Payment','Bill','Ledger','Discount','Return','Missing Bill','Correction','Bilty','Commission'];
+
+// Reminders in memory
+let REMINDERS = [];
+
+// ════════════════════════════════════════
+//  PAGE NAVIGATION
+// ════════════════════════════════════════
+function showPage(page){
+  ['dashView','calView','masterView','reminderView'].forEach(id=>{
+    document.getElementById(id).style.display='none';
+  });
+  document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));
+  closeAllPanels();
+  if(page==='dash'){
+    document.getElementById('dashView').style.display='block';
+    document.getElementById('nl-dash').classList.add('active');
+  } else if(page==='cal'){
+    document.getElementById('calView').style.display='block';
+    document.getElementById('nl-cal').classList.add('active');
+    renderCalendar();
+  } else if(page==='master'){
+    document.getElementById('masterView').style.display='block';
+    document.getElementById('nl-master').classList.add('active');
+    renderMaster();
+  } else if(page==='reminder'){
+    document.getElementById('reminderView').style.display='block';
+    document.getElementById('nl-reminder').classList.add('active');
+    renderReminders();
+  }
+}
+
+// ════════════════════════════════════════
+//  TASK PANEL OPEN/CLOSE
+// ════════════════════════════════════════
+function openAddTask(){
+  editMode=false;
+  document.getElementById('editTaskId').value='';
+  document.getElementById('panelTitle').innerHTML='<i class="fa-solid fa-plus"></i> ADD NEW TASK';
+  document.getElementById('submitBtn').innerHTML='<i class="fa-solid fa-paper-plane"></i>&nbsp; SUBMIT TASK';
+  clearForm();
+  populateFormDropdowns();
+  // Member: auto-assign to self
+  if(currentUser && currentUser.role !== 'admin'){
+    document.getElementById('tAssigned').value = currentUser.displayName;
+  }
+  document.getElementById('taskPanel').classList.add('open');
+  document.getElementById('overlay').classList.add('on');
+  document.getElementById('nl-add').classList.add('active');
+}
+
+function openEditTask(id){
+  const t = allTasks.find(r=>r[0]===id);
+  if(!t) return;
+  editMode=true;
+  document.getElementById('editTaskId').value=id;
+  document.getElementById('panelTitle').innerHTML='<i class="fa-solid fa-pen-to-square"></i> EDIT TASK';
+  document.getElementById('submitBtn').innerHTML='<i class="fa-solid fa-check"></i>&nbsp; UPDATE TASK';
+  populateFormDropdowns();
+  document.getElementById('tParty').value = t[1]||'';
+  document.getElementById('tAgent').value = t[2]||'';
+  document.getElementById('tContact').value = t[3]||'';
+  document.getElementById('tCoord').value = t[4]||'';
+  document.getElementById('tReason').value = t[5]||'';
+  document.getElementById('tDate').value = t[6]||'';
+  document.getElementById('tNotes').value = t[7]||'';
+  document.getElementById('tDue').value = t[8]||'';
+  document.getElementById('tStatus').value = t[9]||'Pending';
+  document.getElementById('tAssigned').value = t[10]||'';
+  document.getElementById('taskPanel').classList.add('open');
+  document.getElementById('overlay').classList.add('on');
+}
+
+function closeAllPanels(){
+  document.getElementById('taskPanel').classList.remove('open');
+  document.getElementById('overlay').classList.remove('on');
+  document.querySelectorAll('.autocomplete-list').forEach(l=>l.classList.remove('show'));
+}
+
+// ════════════════════════════════════════
+//  FORM DROPDOWNS POPULATE
+// ════════════════════════════════════════
+function populateFormDropdowns(){
+  const rs = document.getElementById('tReason');
+  rs.innerHTML='<option value="">-- Select --</option>';
+  REASONS.forEach(r=>rs.innerHTML+=`<option value="${r}">${r}</option>`);
+
+  // BADHA users koine pan task api shake — no restriction on assign dropdown
+  const as = document.getElementById('tAssigned');
+  as.innerHTML='<option value="">-- Select Member --</option>';
+  as.disabled = false;
+  MEMBERS.forEach(m=>as.innerHTML+=`<option value="${m.name}">${m.role==='Admin'?'👑 ':''} ${m.name}</option>`);
+
+  // Filter dropdown
+  const fa = document.getElementById('fAssigned');
+  const isAdmin = currentUser && currentUser.role === 'admin';
+  fa.innerHTML='<option value="">All Members</option>';
+  if(isAdmin){
+    MEMBERS.forEach(m=>fa.innerHTML+=`<option value="${m.name}">${m.name}</option>`);
+  } else {
+    // Member sirf potana tasks filter kari shake — bija na dekhay nahi
+    fa.innerHTML=`<option value="${currentUser ? currentUser.displayName : ''}">My Tasks</option>`;
+    fa.value = currentUser ? currentUser.displayName : '';
+  }
+}
+
+// ════════════════════════════════════════
+//  AUTOCOMPLETE
+// ════════════════════════════════════════
+function acParty(inputId, listId){
+  const q = document.getElementById(inputId).value.trim().toLowerCase();
+  const list = document.getElementById(listId);
+  if(!q){list.classList.remove('show');return;}
+  const matches = PARTIES.filter(p=>p.toLowerCase().includes(q)).slice(0,12);
+  if(!matches.length){list.classList.remove('show');return;}
+  list.innerHTML = matches.map(p=>`<div class="ac-item" onclick="selectAc('${inputId}','${listId}','${p.replace(/'/g,"\\'")}')">  ${p}</div>`).join('');
+  list.classList.add('show');
+}
+
+function selectAc(inputId, listId, val){
+  document.getElementById(inputId).value = val;
+  document.getElementById(listId).classList.remove('show');
+}
+
+document.addEventListener('click', e=>{
+  document.querySelectorAll('.autocomplete-list').forEach(l=>{
+    if(!l.contains(e.target)) l.classList.remove('show');
+  });
+});
+
+// ════════════════════════════════════════
+//  TODAY BANNER
+// ════════════════════════════════════════
+function renderTodayBanner(){
+  const today = new Date();
+  const tStr  = today.toISOString().split('T')[0];
+  const dd=String(today.getDate()).padStart(2,'0');
+  const mm=String(today.getMonth()+1).padStart(2,'0');
+  const yyyy=today.getFullYear();
+  const dayNames=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  document.getElementById('todayLabel').innerText = `${dayNames[today.getDay()]}, ${dd}/${mm}/${yyyy}`;
+
+  let src = allTasks;
+  if(currentUser && currentUser.role!=='admin') src=allTasks.filter(r=>r[10]===currentUser.displayName);
+  const todayPending = src.filter(r=>r[6]===tStr && r[9]!=='Completed' && r[9]!=='Skip');
+  document.getElementById('todayCount').innerText = todayPending.length + ' pending today';
+
+  const chips = document.getElementById('todayChips');
+  chips.innerHTML = '';
+  todayPending.slice(0,6).forEach(r=>{
+    chips.innerHTML += `<span class="today-task-chip" onclick="filterToday()" title="${r[9]}">
+      <span style="width:7px;height:7px;border-radius:50%;background:${statusColor(r[9])};display:inline-block"></span>
+      ${r[1]}
+    </span>`;
+  });
+  if(todayPending.length>6) chips.innerHTML+=`<span class="today-task-chip">+${todayPending.length-6} more</span>`;
+}
+
+// ════════════════════════════════════════
+//  FILTERS
+// ════════════════════════════════════════
+function filterToday(){
+  const t = new Date().toISOString().split('T')[0];
+  document.getElementById('fFrom').value = t;
+  document.getElementById('fTo').value   = t;
+  document.getElementById('fStatus').value   = '';
+  document.getElementById('fAssigned').value = '';
+  document.getElementById('fSearch').value   = '';
+  applyFilters();
+}
+
+function quickFilter(s){
+  document.getElementById('fStatus').value = s;
+  applyFilters();
+  document.querySelectorAll('.s-card').forEach(c=>c.classList.remove('fil-active'));
+  const map = {Completed:0,Skip:1,Hold:2,'In Progress':3,Pending:4};
+  const cards = document.querySelectorAll('.s-card');
+  if(map[s]!==undefined) cards[map[s]].classList.add('fil-active');
+}
+
+function clearFilters(){
+  ['fFrom','fTo','fSearch'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('fStatus').value   = '';
+  document.getElementById('fAssigned').value = '';
+  document.querySelectorAll('.s-card').forEach(c=>c.classList.remove('fil-active'));
+  applyFilters();
+}
+
+// ════════════════════════════════════════
+//  TABLE RENDER
+// ════════════════════════════════════════
+function renderTable(data){
+  const tbody = document.getElementById('tbody');
+  tbody.innerHTML = '';
+  if(!data||!data.length){
+    tbody.innerHTML='<tr><td colspan="12" style="opacity:0.38;padding:22px;font-style:italic">No tasks found</td></tr>';
+    return;
+  }
+  data.forEach(r=>{
+    const done = r[9]==='Completed';
+    const sc   = statusColor(r[9]);
+    const tc   = (r[9]==='In Progress'||r[9]==='Pending')?'#333':'white';
+    tbody.innerHTML += `<tr class="${done?'done-row':''}">
+      <td><input type="checkbox" class="done-check" ${done?'checked':''} onchange="toggleDone('${r[0]}',this)"></td>
+      <td style="font-weight:700;text-align:left;min-width:130px">${r[1]||''}</td>
+      <td>${r[2]||''}</td>
+      <td>${r[3]||''}</td>
+      <td>${r[4]||''}</td>
+      <td><span style="background:rgba(255,255,255,0.13);padding:2px 7px;border-radius:5px;font-size:9px;white-space:nowrap">${r[5]||''}</span></td>
+      <td style="white-space:nowrap">${fmtDate(r[6])}</td>
+      <td style="max-width:160px;min-width:120px;font-size:11px;text-align:left;white-space:normal;word-break:break-word;line-height:1.5;padding:7px 10px;vertical-align:top">${(r[7]||'').replace(/'/g,"&#39;")}</td>
+      <td style="white-space:nowrap">${fmtDate(r[8])}</td>
+      <td><button class="s-badge" style="background:${sc};color:${tc}" onclick="openStatusModal('${r[0]}','${(r[1]||'').replace(/'/g,"\\'")}')">
+        ${r[9]||'—'}
+      </button></td>
+      <td style="font-weight:700;color:#98E5DD;white-space:nowrap">${r[10]||''}</td>
+      <td style="white-space:nowrap">
+        <button class="action-btn btn-edit" onclick="openEditTask('${r[0]}')"><i class="fa-solid fa-pen"></i></button>
+        <button class="action-btn btn-del" onclick="delTask('${r[0]}')"><i class="fa-solid fa-trash"></i></button>
+      </td>
+    </tr>`;
+  });
+}
+
+function statusColor(s){
+  const m={Completed:'#5a7a30','In Progress':'#c9a830',Pending:'#8B4000',Hold:'#c47825',Skip:'#444'};
+  return m[s]||'#555';
+}
+
+function countCards(data){
+  let c=0,s=0,h=0,p=0,pr=0;
+  (data||[]).forEach(r=>{
+    if(r[9]==='Completed')c++;
+    else if(r[9]==='Skip')s++;
+    else if(r[9]==='Hold')h++;
+    else if(r[9]==='Pending')p++;
+    else if(r[9]==='In Progress')pr++;
+  });
+  document.getElementById('cnt-c').innerText=c;
+  document.getElementById('cnt-s').innerText=s;
+  document.getElementById('cnt-h').innerText=h;
+  document.getElementById('cnt-p').innerText=pr;
+  document.getElementById('cnt-pn').innerText=p;
+}
+
+// ════════════════════════════════════════
+//  STATUS MODAL (open/close only — applyStatus is async in login section)
+// ════════════════════════════════════════
+function openStatusModal(id,name){
+  statusTargetId=id;
+  document.getElementById('smp').innerText='Party: '+name;
+  document.getElementById('statusModal').classList.add('show');
+}
+function closeStatusModal(){
+  document.getElementById('statusModal').classList.remove('show');
+  statusTargetId=null;
+}
+
+// ════════════════════════════════════════
+//  clearForm
+// ════════════════════════════════════════
+function clearForm(){
+  ['tParty','tAgent','tContact','tCoord','tNotes'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('tReason').value  = '';
+  document.getElementById('tAssigned').value= '';
+  document.getElementById('tStatus').value  = 'Pending';
+  const t=new Date().toISOString().split('T')[0];
+  document.getElementById('tDate').value=t;
+  document.getElementById('tDue').value=t;
+}
+
+// ════════════════════════════════════════
+//  CALENDAR
+// ════════════════════════════════════════
+function chMonth(d){
+  calMonth+=d;
+  if(calMonth<0){calMonth=11;calYear--;}
+  if(calMonth>11){calMonth=0;calYear++;}
+  selCalDate=null;
+  document.getElementById('calNotes').innerHTML='<div class="cnote-empty">Click any date to view tasks.</div>';
+  document.getElementById('calSelLabel').innerHTML='<i class="fa-solid fa-hand-pointer"></i> Select a date';
+  renderCalendar();
+}
+
+function renderCalendar(){
+  document.getElementById('calMY').innerText=`${MONTHS[calMonth]} ${calYear}`;
+  const grid=document.getElementById('calGrid');
+  grid.innerHTML='';
+  DAYS.forEach((d,i)=>{
+    const el=document.createElement('div');
+    el.className='cal-dn'+(i===0?' sun':'');
+    el.innerText=d;grid.appendChild(el);
+  });
+  const firstDay=new Date(calYear,calMonth,1).getDay();
+  const daysInMonth=new Date(calYear,calMonth+1,0).getDate();
+  const today=new Date();
+  const tbd={};
+  allTasks.forEach(r=>{
+    const due=r[8];if(!due)return;
+    const d=new Date(due);
+    if(isNaN(d)||d.getFullYear()!==calYear||d.getMonth()!==calMonth)return;
+    const k=d.getDate();
+    if(!tbd[k])tbd[k]=[];
+    tbd[k].push(r);
+  });
+  for(let i=0;i<firstDay;i++){
+    const el=document.createElement('div');el.className='cal-cell empty';grid.appendChild(el);
+  }
+  for(let d=1;d<=daysInMonth;d++){
+    const dow=new Date(calYear,calMonth,d).getDay();
+    const isToday=d===today.getDate()&&calMonth===today.getMonth()&&calYear===today.getFullYear();
+    const isSel=selCalDate&&selCalDate===d;
+    const cell=document.createElement('div');
+    cell.className='cal-cell'+(dow===0?' sunday':'')+(isToday?' today':'')+(isSel?' selected':'');
+    const de=document.createElement('div');de.className='cdate';de.innerText=d;cell.appendChild(de);
+    const tasks=tbd[d]||[];
+    if(tasks.length){
+      const dw=document.createElement('div');dw.className='cdots';
+      tasks.slice(0,6).forEach(t=>{
+        const dot=document.createElement('span');dot.className='cdot';
+        dot.style.background=statusColor(t[9]);dot.title=t[1];dw.appendChild(dot);
+      });
+      cell.appendChild(dw);
+      const cnt=document.createElement('div');cnt.className='ccount';
+      cnt.innerText=tasks.length+'t';cell.appendChild(cnt);
+    }
+    cell.onclick=()=>selectCalDate(d,tbd[d]||[]);
+    grid.appendChild(cell);
+  }
+}
+
+function selectCalDate(d,tasks){
+  selCalDate=d;renderCalendar();
+  const dd=String(d).padStart(2,'0');
+  const mm=String(calMonth+1).padStart(2,'0');
+  document.getElementById('calSelLabel').innerHTML=`<i class="fa-solid fa-calendar-day"></i> ${dd}/${mm}/${calYear} <span style="opacity:0.55;font-size:10px">(${tasks.length} tasks)</span>`;
+  const ne=document.getElementById('calNotes');ne.innerHTML='';
+  if(!tasks.length){ne.innerHTML='<div class="cnote-empty">No tasks due on this date.</div>';return;}
+  tasks.forEach(t=>{
+    const item=document.createElement('div');
+    item.className='cnote';
+    item.style.borderLeftColor=statusColor(t[9]);
+    item.innerHTML=`<div class="cnote-party">${t[1]||'—'}</div>
+    <div class="cnote-detail" style="margin-top:4px">
+      <span style="background:${statusColor(t[9])};color:white;padding:1px 7px;border-radius:6px;font-size:9px">${t[9]||''}</span>
+      &nbsp;${t[5]||''}&nbsp;·&nbsp;<span style="color:#98E5DD">${t[10]||''}</span>
+    </div>
+    ${t[7]?`<div class="cnote-detail" style="margin-top:4px;font-style:italic">"${t[7]}"</div>`:''}`;
+    ne.appendChild(item);
+  });
+}
+
+// ════════════════════════════════════════
+//  MASTER DATA
+// ════════════════════════════════════════
+function switchMaster(tab){
+  masterTab=tab;
+  ['party','member','reason'].forEach(t=>{
+    document.getElementById('master-'+t).style.display=t===tab?'block':'none';
+    document.getElementById('mt-'+t).classList.toggle('active',t===tab);
+  });
+  renderMaster();
+}
+
+function renderMaster(){
+  if(masterTab==='party') renderParties();
+  else if(masterTab==='member') renderMembers();
+  else if(masterTab==='reason') renderReasons();
+}
+
+function renderParties(){
+  const q=(document.getElementById('partySearch').value||'').toLowerCase();
+  const list=PARTIES.filter(p=>!q||p.toLowerCase().includes(q));
+  const grid=document.getElementById('partyGrid');
+  grid.innerHTML='';
+  list.forEach((p,i)=>{
+    grid.innerHTML+=`<div class="party-card">
+      <div class="party-name">${p}</div>
+      <div class="party-actions">
+        <button class="action-btn btn-del" onclick="delParty(${PARTIES.indexOf(p)})" title="Remove"><i class="fa-solid fa-trash"></i></button>
+      </div>
+    </div>`;
+  });
+  if(!list.length) grid.innerHTML='<div style="opacity:0.4;font-style:italic;font-size:12px;padding:10px">No parties found.</div>';
+}
+
+function openAddParty(){document.getElementById('addPartyForm').style.display='flex';document.getElementById('newPartyName').focus();}
+function addParty(){
+  const val=document.getElementById('newPartyName').value.trim().toUpperCase();
+  if(!val){showToast('⚠ Enter party name');return;}
+  if(PARTIES.includes(val)){showToast('Party already exists!');return;}
+  PARTIES.push(val);PARTIES.sort();
+  document.getElementById('newPartyName').value='';
+  document.getElementById('addPartyForm').style.display='none';
+  renderParties();showToast('✅ Party added: '+val);
+  saveToServer('addParty',val);
+}
+function delParty(idx){
+  if(!confirm('Remove party?')) return;
+  const p=PARTIES[idx];PARTIES.splice(idx,1);
+  renderParties();showToast('🗑 Removed: '+p);
+  saveToServer('delParty',p);
+}
+
+function renderMembers(){
+  const grid=document.getElementById('memberGrid');
+  grid.innerHTML='';
+  MEMBERS.forEach((m,i)=>{
+    grid.innerHTML+=`<div class="party-card">
+      <div class="party-name">${m.role==='Admin'?'👑 ':''}${m.name} <span style="opacity:0.5;font-size:10px">(${m.role})</span></div>
+      <div class="party-actions">
+        ${m.role!=='Admin'?`<button class="action-btn btn-del" onclick="delMember(${i})"><i class="fa-solid fa-trash"></i></button>`:''}
+      </div>
+    </div>`;
+  });
+}
+function openAddMember(){document.getElementById('addMemberForm').style.display='flex';}
+function addMember(){
+  const val=document.getElementById('newMemberName').value.trim();
+  const role=document.getElementById('newMemberRole').value;
+  if(!val){showToast('⚠ Enter name');return;}
+  MEMBERS.push({name:val,role});
+  document.getElementById('newMemberName').value='';
+  document.getElementById('addMemberForm').style.display='none';
+  renderMembers();populateFormDropdowns();showToast('✅ Member added: '+val);
+}
+function delMember(i){
+  if(!confirm('Remove member?')) return;
+  const n=MEMBERS[i].name;MEMBERS.splice(i,1);
+  renderMembers();populateFormDropdowns();showToast('🗑 Removed: '+n);
+}
+
+function renderReasons(){
+  const grid=document.getElementById('reasonGrid');
+  grid.innerHTML='';
+  REASONS.forEach((r,i)=>{
+    grid.innerHTML+=`<div class="party-card">
+      <div class="party-name">${r}</div>
+      <div class="party-actions">
+        <button class="action-btn btn-del" onclick="delReason(${i})"><i class="fa-solid fa-trash"></i></button>
+      </div>
+    </div>`;
+  });
+}
+function openAddReason(){document.getElementById('addReasonForm').style.display='flex';}
+function addReason(){
+  const val=document.getElementById('newReasonName').value.trim();
+  if(!val){showToast('⚠ Enter reason');return;}
+  REASONS.push(val);
+  document.getElementById('newReasonName').value='';
+  document.getElementById('addReasonForm').style.display='none';
+  renderReasons();showToast('✅ Reason added: '+val);
+}
+function delReason(i){
+  if(!confirm('Remove reason?')) return;
+  REASONS.splice(i,1);renderReasons();showToast('🗑 Removed');
+}
+
+function saveToServer(action,data){
+  api('masterAction', { masterAction: action, value: data });
+}
+
+// ════════════════════════════════════════
+//  DATE HELPERS — DD/MM/YYYY
+// ════════════════════════════════════════
+function fmtDate(isoStr){
+  if(!isoStr) return '';
+  // Handle both YYYY-MM-DD and Date objects
+  const parts = isoStr.split('-');
+  if(parts.length===3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
+  return isoStr;
+}
+
+function fmtDateTime(dtStr){
+  if(!dtStr) return '';
+  const d = new Date(dtStr);
+  if(isNaN(d)) return dtStr;
+  const dd=String(d.getDate()).padStart(2,'0');
+  const mm=String(d.getMonth()+1).padStart(2,'0');
+  const yyyy=d.getFullYear();
+  const hh=String(d.getHours()).padStart(2,'0');
+  const min=String(d.getMinutes()).padStart(2,'0');
+  return `${dd}/${mm}/${yyyy} ${hh}:${min}`;
+}
+
+// ════════════════════════════════════════
+//  REMINDERS — FULL SYSTEM
+// ════════════════════════════════════════
+let activeReminderIdx = null; // index of currently showing big popup
+let bigRemTimerInterval = null;
+
+function renderReminders(){
+  const list=document.getElementById('remList');
+  list.innerHTML='';
+  const now=new Date();
+  if(!REMINDERS.length){
+    list.innerHTML='<div style="opacity:0.4;font-style:italic;font-size:13px;padding:14px">No reminders set. Click "Add Reminder" to create one.</div>';
+    return;
+  }
+  REMINDERS.sort((a,b)=>new Date(a.dt)-new Date(b.dt)).forEach((r,i)=>{
+    const dt=new Date(r.dt);
+    const overdue=dt<now;
+    const diff=dt-now;
+    const soon=diff>0&&diff<3600000;
+    const firedCount = r.firedCount||0;
+    const maxRep = r.maxRepeats||5;
+    const done = r.done||false;
+    list.innerHTML+=`<div class="rem-item${done?' done-row':overdue?' overdue':soon?' soon':''}">
+      <div style="font-size:22px">${done?'✅':overdue?'🔴':soon?'🟡':'🔔'}</div>
+      <div style="flex:1">
+        <div class="rem-time">${fmtDateTime(r.dt)}</div>
+        <div class="rem-msg">${r.msg}${r.party?` — <span style="color:#98E5DD">${r.party}</span>`:''}</div>
+        <div style="font-size:10px;opacity:0.55;margin-top:3px">
+          🔁 Every ${r.repeatMins||10} min &nbsp;·&nbsp; ${firedCount}/${maxRep} fired
+          ${done?' &nbsp;·&nbsp; <span style="color:#98E5DD">✅ Done</span>':''}
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:5px;align-items:flex-end">
+        ${!done?`<button class="rem-del" style="background:rgba(50,180,50,0.6)" onclick="markReminderDone(${i})">✅ Done</button>`:''}
+        <button class="rem-del" onclick="delReminder(${i})"><i class="fa-solid fa-trash"></i></button>
+      </div>
+    </div>`;
+  });
+}
+
+function openAddReminder(){
+  const now=new Date();
+  now.setMinutes(now.getMinutes()+5);
+  // round to nearest minute
+  now.setSeconds(0);
+  document.getElementById('remDT').value=now.toISOString().slice(0,16);
+  document.getElementById('remMsg').value='';
+  document.getElementById('remParty').value='';
+  document.getElementById('remRepeatMins').value=10;
+  document.getElementById('remMaxRepeats').value=5;
+  document.getElementById('remModal').classList.add('show');
+}
+function closeRemModal(){document.getElementById('remModal').classList.remove('show');}
+
+function saveReminder(){
+  const msg=document.getElementById('remMsg').value.trim();
+  const dt=document.getElementById('remDT').value;
+  const party=document.getElementById('remParty').value.trim();
+  const repeatMins=parseInt(document.getElementById('remRepeatMins').value)||10;
+  const maxRepeats=parseInt(document.getElementById('remMaxRepeats').value)||5;
+  if(!msg||!dt){showToast('⚠ Fill message and time');return;}
+  const rem={msg,dt,party,repeatMins,maxRepeats,firedCount:0,done:false};
+  REMINDERS.push(rem);
+  closeRemModal();renderReminders();showToast('🔔 Reminder set!');
+  scheduleReminder(REMINDERS.length-1);
+}
+
+function delReminder(i){
+  REMINDERS.splice(i,1);renderReminders();showToast('🗑 Removed');
+}
+
+function markReminderDone(i){
+  REMINDERS[i].done=true;
+  // Close big popup if it's showing this one
+  if(activeReminderIdx===i) closeBigReminder();
+  renderReminders();showToast('✅ Reminder marked done!');
+}
+
+function scheduleReminder(idx){
+  const r=REMINDERS[idx];
+  if(!r||r.done) return;
+  const delay=new Date(r.dt)-new Date();
+  if(delay<0){
+    // If just added and already past, fire immediately
+    if(delay>-5000) setTimeout(()=>fireReminder(idx),500);
+    return;
+  }
+  if(delay>7*24*3600*1000) return; // don't schedule if >7 days
+  setTimeout(()=>fireReminder(idx), delay);
+}
+
+function fireReminder(idx){
+  const r=REMINDERS[idx];
+  if(!r||r.done) return;
+  r.firedCount=(r.firedCount||0)+1;
+  // Show BIG blocking popup
+  showBigReminder(idx);
+  // Also re-schedule if not done and under max
+  if(r.firedCount < r.maxRepeats){
+    setTimeout(()=>{
+      if(!REMINDERS[idx]||REMINDERS[idx].done) return;
+      fireReminder(idx);
+    }, (r.repeatMins||10)*60*1000);
+  }
+  renderReminders();
+}
+
+// ── BIG BLOCKING POPUP ──
+function showBigReminder(idx){
+  const r=REMINDERS[idx];
+  if(!r) return;
+  activeReminderIdx=idx;
+  document.getElementById('bigRemMsg').innerText=r.msg;
+  document.getElementById('bigRemParty').innerText=r.party?'Party: '+r.party:'';
+  document.getElementById('bigRemCount').innerText=
+    `Fired ${r.firedCount} of ${r.maxRepeats} time(s)  |  Every ${r.repeatMins} min`;
+
+  // Show countdown if more snoozes remain
+  const moreSnoozes = r.firedCount < r.maxRepeats && !r.done;
+  const snoozeBtn=document.getElementById('snoozeBtn');
+  if(moreSnoozes){
+    snoozeBtn.style.display='inline-block';
+    snoozeBtn.innerText=`⏰ Snooze (${r.repeatMins} min)`;
+  } else {
+    snoozeBtn.style.display='none';
+  }
+
+  document.getElementById('bigReminderOverlay').classList.add('show');
+
+  // Live timer showing how long popup has been open
+  let secs=0;
+  clearInterval(bigRemTimerInterval);
+  bigRemTimerInterval=setInterval(()=>{
+    secs++;
+    document.getElementById('bigRemTimer').innerText=`Showing for ${secs}s`;
+  },1000);
+
+  // Browser notification
+  if(typeof Notification!=='undefined'&&Notification.permission==='granted'){
+    new Notification('🔔 MONZARA Reminder',{body:r.msg+(r.party?' — '+r.party:'')});
+  }
+}
+
+function dismissBigReminder(){
+  if(activeReminderIdx!==null){
+    REMINDERS[activeReminderIdx].done=true;
+    renderReminders();
+    showToast('✅ Reminder marked complete!');
+  }
+  closeBigReminder();
+}
+
+function snoozeBigReminder(){
+  // Already re-scheduled automatically, just close popup
+  closeBigReminder();
+  const r=activeReminderIdx!==null?REMINDERS[activeReminderIdx]:null;
+  if(r) showToast(`⏰ Snoozed — next in ${r.repeatMins} min`);
+}
+
+function closeBigReminder(){
+  document.getElementById('bigReminderOverlay').classList.remove('show');
+  clearInterval(bigRemTimerInterval);
+  document.getElementById('bigRemTimer').innerText='';
+  activeReminderIdx=null;
+}
+
+function initReminders(){
+  REMINDERS.forEach((_,i)=>scheduleReminder(i));
+}
+
+function askNotifPermission(){
+  if(typeof Notification!=='undefined'&&Notification.permission==='default'){
+    Notification.requestPermission();
+  }
+}
+
+// ════════════════════════════════════════
+//  ⚙️  APPS SCRIPT URL — YAHAN PASTE KARO
+//  Deploy karta pachhi melta URL ne
+//  aa variable ma set karo
+// ════════════════════════════════════════
+const APPS_SCRIPT_URL = 'YOUR_APPS_SCRIPT_WEB_APP_URL_HERE';
+// Example:
+// const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfyc.../exec';
+
+// ════════════════════════════════════════
+//  API HELPER — fetch wrapper
+// ════════════════════════════════════════
+async function api(action, bodyData){
+  if(!APPS_SCRIPT_URL || APPS_SCRIPT_URL.includes('YOUR_APPS')){
+    console.warn('APPS_SCRIPT_URL set nathi! Demo mode ma chhe.');
+    return null;
+  }
+  try {
+    if(action === 'getTasks' || action === 'login' || action === 'getUsers'){
+      // GET request
+      let url = APPS_SCRIPT_URL + '?action=' + action;
+      if(bodyData) Object.keys(bodyData).forEach(k => url += '&'+k+'='+encodeURIComponent(bodyData[k]));
+      const r = await fetch(url);
+      return await r.json();
+    } else {
+      // POST request
+      const r = await fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify({ action, ...bodyData })
+      });
+      return await r.json();
+    }
+  } catch(e){
+    console.error('API Error:', e);
+    showToast('⚠ Server connect nahi thatu');
+    return null;
+  }
+}
+
+// ════════════════════════════════════════
+//  LOGIN SYSTEM
+// ════════════════════════════════════════
+let currentUser = null;
+
+// Fallback local users (jyar sudhi URL set na thay)
+let USERS = [
+  { username:'rohit',  displayName:'Rohit',  password:'admin123', role:'admin',  color:'#2d7a3d' },
+  { username:'nish',   displayName:'Nish',   password:'nish123',  role:'member', color:'#1a6ab5' },
+  { username:'kinjal', displayName:'Kinjal', password:'kinjal123',role:'member', color:'#8b3d9e' },
+  { username:'axita',  displayName:'Axita',  password:'axita123', role:'member', color:'#b5651d' },
+  { username:'ankit',  displayName:'Ankit',  password:'ankit123', role:'member', color:'#c0392b' },
+];
+
+async function doLogin(){
+  const uname = document.getElementById('loginUser').value.trim().toLowerCase();
+  const pw    = document.getElementById('loginPw').value;
+  const errEl = document.getElementById('loginError');
+  const btn   = document.querySelector('.login-btn');
+
+  if(!uname || !pw){
+    errEl.innerText = '⚠ Username ane Password nakho';
+    errEl.classList.add('show'); return;
+  }
+
+  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Logging in...';
+  btn.disabled = true;
+
+  // Try server API first
+  const res = await api('login', { username: uname, password: pw });
+
+  if(res && res.success && res.user){
+    loginSuccess(res.user);
+    // Sync users from server
+    const usersRes = await api('getUsers');
+    if(usersRes && usersRes.data) USERS = usersRes.data;
+  } else {
+    // Fallback to local USERS list
+    const user = USERS.find(u => u.username === uname && u.password === pw);
+    if(user){
+      loginSuccess(user);
+    } else {
+      errEl.innerText = '❌ Incorrect username or password';
+      errEl.classList.add('show');
+    }
+  }
+
+  btn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> &nbsp; LOGIN';
+  btn.disabled = false;
+}
+
+function loginSuccess(user){
+  currentUser = user;
+  // ── Save session so refresh doesn't logout ──
+  try { sessionStorage.setItem('mz_user', JSON.stringify(user)); } catch(e){}
+
+  document.getElementById('loginScreen').classList.add('hidden');
+  document.getElementById('mainSidebar').style.display = 'flex';
+  document.getElementById('mainArea').style.display = 'block';
+
+  const initial = user.displayName.charAt(0).toUpperCase();
+  document.getElementById('sidebarAvatar').innerText = initial;
+  document.getElementById('sidebarAvatar').style.background =
+    `linear-gradient(135deg,${user.color||'#1a4a28'},#98E5DD)`;
+  document.getElementById('sidebarName').innerText = user.displayName;
+  document.getElementById('sidebarRole').innerText = user.role==='admin' ? '👑 ADMIN' : 'MEMBER';
+
+  document.querySelectorAll('.admin-only').forEach(el=>{
+    el.style.display = user.role==='admin' ? 'flex' : 'none';
+  });
+
+  loadData();
+  populateFormDropdowns();
+  askNotifPermission();
+
+  const t = new Date().toISOString().split('T')[0];
+  document.getElementById('tDate').value = t;
+  document.getElementById('tDue').value  = t;
+
+  showToast(`👋 Welcome, ${user.displayName}!`);
+}
+
+function doLogout(){
+  if(!confirm('Logout karvu chhe?')) return;
+  currentUser = null;
+  allTasks = [];
+  try { sessionStorage.removeItem('mz_user'); } catch(e){}
+  document.getElementById('loginScreen').classList.remove('hidden');
+  document.getElementById('mainSidebar').style.display = 'none';
+  document.getElementById('mainArea').style.display = 'none';
+  document.getElementById('loginUser').value = '';
+  document.getElementById('loginPw').value   = '';
+  document.getElementById('loginError').classList.remove('show');
+}
+
+// ════════════════════════════════════════
+//  LOAD DATA — always fresh from server
+//  Refresh = server thi nava data, cache nahi
+// ════════════════════════════════════════
+async function loadData(){
+  document.getElementById('tbody').innerHTML =
+    '<tr><td colspan="12" style="padding:22px;opacity:0.5;text-align:center"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</td></tr>';
+
+  const res = await api('getTasks');
+
+  if(res && res.data){
+    // Server thi data aavyu — replace karo (overwrite problem nahi, server j sache data chhe)
+    allTasks = res.data;
+  } else {
+    // Server nathi malyun — demo data (sirf jyar URL set na hoy)
+    if(!APPS_SCRIPT_URL.includes('YOUR_APPS')){
+      // URL set chhe pan server respond nathi karyu
+      showToast('⚠ Server respond nahi karyun — purana data show thay chhe');
+      // Keep existing allTasks if any — don't clear
+      if(!allTasks.length){
+        const t   = new Date().toISOString().split('T')[0];
+        const tom = new Date(Date.now()+86400000).toISOString().split('T')[0];
+        allTasks = [
+          ['1','SHARMA FASHIONS','Rohit','9876543210','Priya','Payment',t,'Pending payment follow up',t,'Pending','Rohit'],
+          ['2','GLOBAL EXPORTS','Nish','8765432109','Axita','Bill',t,'Bill not received',tom,'In Progress','Nish'],
+        ];
+      }
+    } else {
+      // Demo mode — no URL set
+      const t   = new Date().toISOString().split('T')[0];
+      const tom = new Date(Date.now()+86400000).toISOString().split('T')[0];
+      allTasks = [
+        ['1','SHARMA FASHIONS','Rohit','9876543210','Priya','Payment',t,'Pending payment follow up',t,'Pending','Rohit'],
+        ['2','GLOBAL EXPORTS','Nish','8765432109','Axita','Bill',t,'Bill not received',tom,'In Progress','Nish'],
+        ['3','CITY MERCHANTS','Kinjal','7654321098','Ankit','Return',t,'Return parcel pending',tom,'Hold','Kinjal'],
+        ['4','PRIME SUPPLIES','Axita','6543210987','Nish','Ledger',tom,'Monthly ledger review',tom,'Completed','Axita'],
+        ['5','ALPHA DISTRIBUTORS','Ankit','5432109876','Rohit','Commission',t,'Commission calc',t,'Pending','Ankit'],
+        ['6','MANTRA ETHNIC','Rohit','9988776655','Kinjal','Discount',t,'Special discount asked',t,'In Progress','Rohit'],
+      ];
+    }
+  }
+
+  applyFilters();
+  renderTodayBanner();
+  if(document.getElementById('calView').style.display !== 'none') renderCalendar();
+}
+
+// ════════════════════════════════════════
+//  applyFilters — role-aware
+// ════════════════════════════════════════
+function applyFilters(){
+  const from     = document.getElementById('fFrom').value;
+  const to       = document.getElementById('fTo').value;
+  const status   = document.getElementById('fStatus').value;
+  const assigned = document.getElementById('fAssigned').value;
+  const search   = document.getElementById('fSearch').value.toLowerCase();
+
+  let source = allTasks;
+
+  // NON-ADMIN: sirf potana naam par assigned tasks j dekhay
+  // Chahe task koine pan banavi hoy — bas assignedTo field match karu joie
+  if(currentUser && currentUser.role !== 'admin'){
+    source = allTasks.filter(r => r[10] === currentUser.displayName);
+  }
+
+  const fd = source.filter(r=>{
+    if(r[9]==='Completed' && !status && !from && !to && !assigned && !search) return false;
+    const dv = r[6]||'';
+    if(from && dv && dv<from) return false;
+    if(to   && dv && dv>to)   return false;
+    if(status   && r[9]!==status)    return false;
+    if(assigned && r[10]!==assigned) return false;
+    if(search && !(r[1]+r[5]+r[2]).toLowerCase().includes(search)) return false;
+    return true;
+  });
+
+  renderTable(fd);
+  countCards(source); // count based on user's visible tasks only
+}
+
+// ════════════════════════════════════════
+//  toggleDone — async
+// ════════════════════════════════════════
+async function toggleDone(id, cb){
+  const ns  = cb.checked ? 'Completed' : 'Pending';
+  const row = allTasks.find(r=>r[0]===id);
+  if(row) row[9] = ns;
+  applyFilters(); renderTodayBanner();
+  showToast(cb.checked ? '✅ Marked Completed' : '↩ Marked Pending');
+  await api('updateStatus', { id, status: ns });
+}
+
+// ════════════════════════════════════════
+//  applyStatus — async (status modal)
+// ════════════════════════════════════════
+async function applyStatus(ns){
+  if(!statusTargetId) return;
+  const row = allTasks.find(r=>r[0]===statusTargetId);
+  if(row) row[9] = ns;
+  closeStatusModal(); applyFilters(); renderTodayBanner();
+  showToast('✅ Status → ' + ns);
+  await api('updateStatus', { id: statusTargetId, status: ns });
+}
+
+// ════════════════════════════════════════
+//  submitTask — optimistic update + server confirm
+//  Data add thay turant — server response pachhi confirm
+// ════════════════════════════════════════
+async function submitTask(){
+  const party    = document.getElementById('tParty').value.trim();
+  const reason   = document.getElementById('tReason').value;
+  const assigned = document.getElementById('tAssigned').value;
+  if(!party)   { showToast('⚠ Party Name required!'); return; }
+  if(!reason)  { showToast('⚠ Select a Reason!');     return; }
+  if(!assigned){ showToast('⚠ Select Assigned Member!'); return; }
+
+  const task = {
+    partyName:       party,
+    agentName:       document.getElementById('tAgent').value.trim(),
+    contactNumber:   document.getElementById('tContact').value.trim(),
+    coordinatorName: document.getElementById('tCoord').value.trim(),
+    reasonToCall:    reason,
+    taskDate:        document.getElementById('tDate').value,
+    notes:           document.getElementById('tNotes').value.trim(),
+    dateDue:         document.getElementById('tDue').value,
+    workStatus:      document.getElementById('tStatus').value,
+    assignedTo:      assigned
+  };
+
+  const btn = document.getElementById('submitBtn');
+  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+  btn.disabled  = true;
+
+  if(editMode){
+    // ── EDIT — update local instantly, then send to server ──
+    const id  = document.getElementById('editTaskId').value;
+    const idx = allTasks.findIndex(r=>r[0]===id);
+    if(idx !== -1){
+      // Update in-place — no overwrite of other rows
+      allTasks[idx] = [id, task.partyName, task.agentName, task.contactNumber,
+        task.coordinatorName, task.reasonToCall, task.taskDate, task.notes,
+        task.dateDue, task.workStatus, task.assignedTo];
+    }
+    closeAllPanels(); clearForm();
+    applyFilters(); renderTodayBanner();
+    showToast('✏️ Task updated!');
+
+    // Server update async — no reload needed
+    api('editTask', { id, task });
+
+  } else {
+    // ── ADD — create temp ID, add to local list instantly ──
+    const tempId = 'tmp_' + Date.now();
+    const newRow = [tempId, task.partyName, task.agentName, task.contactNumber,
+      task.coordinatorName, task.reasonToCall, task.taskDate, task.notes,
+      task.dateDue, task.workStatus, task.assignedTo];
+
+    // Instantly add to local data — user sees it immediately
+    allTasks.push(newRow);
+    closeAllPanels(); clearForm();
+    applyFilters(); renderTodayBanner();
+    showToast('✅ Task added!');
+
+    // Send to server — get real ID back — update the temp row
+    const res = await api('addTask', { task });
+    if(res && res.id){
+      // Replace temp ID with real server ID — no overwrite, just ID update
+      const idx = allTasks.findIndex(r=>r[0]===tempId);
+      if(idx !== -1) allTasks[idx][0] = res.id;
+    }
+  }
+
+  btn.innerHTML = editMode
+    ? '<i class="fa-solid fa-check"></i>&nbsp; UPDATE TASK'
+    : '<i class="fa-solid fa-paper-plane"></i>&nbsp; SUBMIT TASK';
+  btn.disabled = false;
+}
+
+// ════════════════════════════════════════
+//  delTask — instant UI remove + server delete
+// ════════════════════════════════════════
+async function delTask(id){
+  if(!confirm('Delete this task?')) return;
+  // Instantly remove from local — user sees it gone immediately
+  allTasks = allTasks.filter(r=>r[0]!==id);
+  applyFilters(); renderTodayBanner();
+  showToast('🗑 Deleted');
+  // Server delete async
+  api('deleteTask', { id });
+}
+
+// ════════════════════════════════════════
+//  USER MANAGEMENT (Admin Page)
+// ════════════════════════════════════════
+function renderUserList(){
+  const list = document.getElementById('userList');
+  list.innerHTML = '';
+  USERS.forEach((u,i)=>{
+    const isMe = currentUser && u.username === currentUser.username;
+    list.innerHTML += `
+    <div class="user-card">
+      <div class="user-card-avatar" style="background:linear-gradient(135deg,${u.color||'#1a4a28'},#98E5DD)">
+        ${u.displayName.charAt(0)}
+      </div>
+      <div class="user-card-info">
+        <div class="user-card-name">${u.displayName} ${isMe?'<span style="font-size:10px;opacity:0.5">(You)</span>':''}</div>
+        <div class="user-card-role">${u.role==='admin'?'👑 Admin':'Member'} &nbsp;·&nbsp; @${u.username}</div>
+        <div class="user-card-pw">🔑 Password: <span class="pw-tag" id="pw_${i}">••••••</span>
+          <button onclick="togglePw(${i})" style="background:none;border:none;color:#98E5DD;cursor:pointer;font-size:10px;margin-left:4px">👁</button>
+        </div>
+      </div>
+      <div class="user-card-actions">
+        <button class="action-btn btn-edit" onclick="openEditUser(${i})" title="Change Password">
+          <i class="fa-solid fa-key"></i>
+        </button>
+        ${!isMe?`<button class="action-btn btn-del" onclick="delUser(${i})"><i class="fa-solid fa-trash"></i></button>`:''}
+      </div>
+    </div>`;
+  });
+}
+
+let pwVisible = {};
+function togglePw(i){
+  pwVisible[i] = !pwVisible[i];
+  document.getElementById('pw_'+i).innerText = pwVisible[i] ? (USERS[i].password||'—') : '••••••';
+}
+
+function openAddUser(){ document.getElementById('addUserForm').style.display='flex'; document.getElementById('newUserName').focus(); }
+
+async function addUser(){
+  const uname   = document.getElementById('newUserName').value.trim().toLowerCase();
+  const display = document.getElementById('newUserDisplay').value.trim();
+  const pw      = document.getElementById('newUserPw').value;
+  const role    = document.getElementById('newUserRole').value;
+  if(!uname||!display||!pw){ showToast('⚠ Badha fields fill karo!'); return; }
+  if(USERS.find(u=>u.username===uname)){ showToast('⚠ Username already exists!'); return; }
+  const colors = ['#1a6ab5','#8b3d9e','#b5651d','#c0392b','#2d7a8a','#7a4a2d'];
+  const color  = colors[USERS.length % colors.length];
+  const newUser = {username:uname, displayName:display, password:pw, role, color};
+  USERS.push(newUser);
+  if(!MEMBERS.find(m=>m.name===display)){
+    MEMBERS.push({name:display, role:role==='admin'?'Admin':'Member'});
+    populateFormDropdowns();
+  }
+  document.getElementById('addUserForm').style.display='none';
+  ['newUserName','newUserDisplay','newUserPw'].forEach(id=>document.getElementById(id).value='');
+  renderUserList();
+  showToast('✅ User added: '+display);
+  await api('saveUser', { user: newUser });
+}
+
+async function openEditUser(i){
+  const newPw = prompt(`Change password for "${USERS[i].displayName}":`);
+  if(newPw===null) return;
+  if(newPw.trim().length < 4){ showToast('⚠ Min 4 characters!'); return; }
+  USERS[i].password = newPw.trim();
+  renderUserList();
+  showToast('✅ Password updated for '+USERS[i].displayName);
+  await api('updateUserPassword', { username: USERS[i].username, password: newPw.trim() });
+}
+
+async function delUser(i){
+  if(!confirm(`Delete user "${USERS[i].displayName}"?`)) return;
+  const uname = USERS[i].username;
+  const name  = USERS[i].displayName;
+  USERS.splice(i,1);
+  renderUserList();
+  showToast('🗑 User removed: '+name);
+  await api('deleteUser', { username: uname });
+}
+
+// ════════════════════════════════════════
+//  showPage
+// ════════════════════════════════════════
+function showPage(page){
+  ['dashView','calView','masterView','reminderView','userMgmtView'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.style.display='none';
+  });
+  document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));
+  closeAllPanels();
+
+  if(page==='users'){
+    if(!currentUser||currentUser.role!=='admin'){ showToast('⚠ Admin only!'); return; }
+    document.getElementById('userMgmtView').style.display='block';
+    document.getElementById('nl-users').classList.add('active');
+    renderUserList(); return;
+  }
+  if(page==='dash'){
+    document.getElementById('dashView').style.display='block';
+    document.getElementById('nl-dash').classList.add('active');
+  } else if(page==='cal'){
+    document.getElementById('calView').style.display='block';
+    document.getElementById('nl-cal').classList.add('active');
+    renderCalendar();
+  } else if(page==='master'){
+    document.getElementById('masterView').style.display='block';
+    document.getElementById('nl-master').classList.add('active');
+    renderMaster();
+  } else if(page==='reminder'){
+    document.getElementById('reminderView').style.display='block';
+    document.getElementById('nl-reminder').classList.add('active');
+    renderReminders();
+  }
+}
+
+// ════════════════════════════════════════
+//  TOAST
+// ════════════════════════════════════════
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.innerText=msg; t.classList.add('show');
+  clearTimeout(t._t);
+  t._t=setTimeout(()=>t.classList.remove('show'),3200);
+}
+
+// ════════════════════════════════════════
+//  INIT — Auto-restore session on refresh
+//  Session = user info only (not task data)
+//  Task data = always fresh from server
+// ════════════════════════════════════════
+populateFormDropdowns();
+askNotifPermission();
+initReminders();
+
+// ── Restore user session from sessionStorage ──
+// Sirf user info save thay — task data always server thi aave
+(function restoreSession(){
+  try {
+    const saved = sessionStorage.getItem('mz_user');
+    if(saved){
+      const user = JSON.parse(saved);
+      if(user && user.username){
+        // Restore UI without toast
+        currentUser = user;
+        document.getElementById('loginScreen').classList.add('hidden');
+        document.getElementById('mainSidebar').style.display = 'flex';
+        document.getElementById('mainArea').style.display = 'block';
+
+        const initial = user.displayName.charAt(0).toUpperCase();
+        document.getElementById('sidebarAvatar').innerText = initial;
+        document.getElementById('sidebarAvatar').style.background =
+          `linear-gradient(135deg,${user.color||'#1a4a28'},#98E5DD)`;
+        document.getElementById('sidebarName').innerText = user.displayName;
+        document.getElementById('sidebarRole').innerText = user.role==='admin' ? '👑 ADMIN' : 'MEMBER';
+        document.querySelectorAll('.admin-only').forEach(el=>{
+          el.style.display = user.role==='admin' ? 'flex' : 'none';
+        });
+
+        const t = new Date().toISOString().split('T')[0];
+        document.getElementById('tDate').value = t;
+        document.getElementById('tDue').value  = t;
+
+        // Always fresh server data — never cached tasks
+        populateFormDropdowns();
+        loadData();
+        return;
+      }
+    }
+  } catch(e){}
+  // No session — login screen already visible
+})();
+</script>
+</body>
+</html>
